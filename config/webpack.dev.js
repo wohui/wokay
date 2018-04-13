@@ -7,7 +7,7 @@ var projectRootPath = path.resolve(__dirname,'..')
 var config = {
     mode:"development",
     entry: {'index':'./client/app.js'},
-    //生成文件路径，单页html位置
+    //生成文件路径
     output:{
         path: path.resolve(projectRootPath,'static','build'),
         filename: 'bundle.js',
@@ -40,7 +40,7 @@ var config = {
         port: 3002,
         hot: true,
         inline: true,
-        contentBase: path.resolve(projectRootPath,'static','build'),
+        contentBase: path.resolve(projectRootPath,'static'),//单页html位置
         historyApiFallback: true,
         disableHostCheck: true,
     },
