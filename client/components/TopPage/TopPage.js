@@ -7,13 +7,13 @@ import {Carousel} from 'element-react'
 import {Table} from 'element-react'
 import 'element-theme-default' //导入element-ui默认主题
 
-import './HomePage.css'
+import './TopPage.css'
 
 require('es6-promise').polyfill();
 require('isomorphic-fetch');
 
 import banner from '../../../static/imgs/banner.jpg'
-export default class HomePage extends React.Component {
+class TopPage extends React.Component {
 
     constructor(props){
         super(props);
@@ -46,45 +46,6 @@ export default class HomePage extends React.Component {
                 }]
         }
 
-    } //constrautor end
-    getData(dispatch)  {
-        return fetch('http://www.baidu.com')
-            .then((response) => response.json())
-            .then((json) => {
-                let hasError = false;
-                let text = '';
-
-                /// /api/list正常返回格式{errcode:0,errmsg:'',data:[]}
-                if (json.errcode !== 0) {
-                    hasError = true;
-                    text = json.errmsg;
-                } else {
-                    hasError = false;
-                    text = '';
-                }
-
-                // 网络异常 如断网
-                if (json.error) {
-                    dispatch(list({
-                        msg: strings.NET_ERROR,
-                        data: []
-                    }));
-                }
-                // 正常业务处理
-                else {
-                    dispatch(list({
-                        msg: hasError ? text : '',
-                        data: hasError ? [] : json.data
-                    }));
-                }
-            })
-            // 异常处理
-            .catch((err) => {
-                dispatch(list({
-                    msg: (__DEBUG__ && err.message) ? err.message : strings.NET_ERROR,
-                    data: []
-                }));
-            });
     }
     componentDidMount (){
         fetch('你的请求',{})
@@ -102,6 +63,7 @@ export default class HomePage extends React.Component {
             return;
         };
     }
+
     render() {
 
         return (
@@ -127,25 +89,11 @@ export default class HomePage extends React.Component {
                         </div>
                     </Layout.Col>
                 </Layout.Row>
-
-                <Layout.Row>
-                    <Button onClick={this.getData} type="primary" icon="edit"></Button>
-                    <Layout.Col span="24">
-                        <div className="grid-content bg-purple-light">
-                            <Table
-                                style={{width: '100%'}}
-                                columns={this.state.columns}
-                                maxHeight={200}
-                                data={this.state.data}
-                            />
-                        </div>
-                    </Layout.Col>
-                </Layout.Row>
             </div>
         )
     }
 
 }
 
-
+export default TopPage
 

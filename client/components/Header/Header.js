@@ -1,6 +1,6 @@
 import React from "react";
 import {Layout} from 'element-react'
-import {Link} from 'react-router'
+import {BrowserRouter,Link} from 'react-router-dom'
 
 import './header.css'
 class Header extends React.Component {
@@ -11,8 +11,8 @@ class Header extends React.Component {
                 <Layout.Row >
                     <Layout.Col span="24">
                         <div className="grid-content bg-purple-dark header-bg">
-                            <p>首页</p>
-                            <p>歌手</p>
+                            <li><Link to="/home">首页</Link></li>
+                            <li><Link to="/top">排行榜</Link></li>
                         </div>
                     </Layout.Col>
                 </Layout.Row>
