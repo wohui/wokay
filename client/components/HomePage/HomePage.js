@@ -20,7 +20,7 @@ export default class HomePage extends React.Component {
         this.state = {
             columns: [
                 {
-                    label: "日期",
+                    label: "日期23",
                     prop: "date",
                     width: 180
                 },

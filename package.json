@@ -2,10 +2,10 @@
   "name": "wokay",
   "version": "0.0.1",
   "scripts": {
-    "build": "webpack --verbose --color --display-error-details --config ./config/webpack.dev.js ",
-    "start_server": "node ./server/server.js",
-    "dev": "webpack-dev-server --devtool eval --progress --colors --profile --config ./config/webpack.dev.js",
-    "start": "npm run dev"
+    "build": "webpack --watch --verbose --color --display-error-details --config ./config/webpack.dev.js ",
+    "start": "npm run build & node ./server/server.js",
+    //"dev": "webpack-dev-server --devtool eval --progress --colors --profile --config ./config/webpack.dev.js",
+    //"start": "npm run dev"
   },
   "devDependencies": {
     "babel-core": "^6.21.0",
