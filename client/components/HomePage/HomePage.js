@@ -20,7 +20,7 @@ export default class HomePage extends React.Component {
         this.state = {
             columns: [
                 {
-                    label: "日期23",
+                    label: "日期",
                     prop: "date",
                     width: 180
                 },
@@ -48,13 +48,13 @@ export default class HomePage extends React.Component {
 
     } //constrautor end
     getData(dispatch)  {
-        return fetch('http://www.baidu.com')
+        return fetch('/api/get/data.json')
             .then((response) => response.json())
             .then((json) => {
                 let hasError = false;
                 let text = '';
 
-                /// /api/list正常返回格式{errcode:0,errmsg:'',data:[]}
+                /// /controllers/list正常返回格式{errcode:0,errmsg:'',data:[]}
                 if (json.errcode !== 0) {
                     hasError = true;
                     text = json.errmsg;

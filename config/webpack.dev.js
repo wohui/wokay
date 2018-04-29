@@ -53,7 +53,7 @@ var config = {
         port: 3002,
         hot: true,
         inline: true,
-        contentBase: path.resolve(projectRootPath, 'static'),//单页html位置
+        contentBase: path.resolve(projectRootPath, 'static/views'),//单页html位置
         historyApiFallback: true,
         disableHostCheck: true,
     },

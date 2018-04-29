@@ -12,7 +12,7 @@
  */
 require('babel-core/register')()
 require('babel-polyfill')
-require('./server/app.js')
+require('./server/server.js')
 
 if (module.hot) {
     module.hot.accept();

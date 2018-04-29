@@ -15,12 +15,12 @@ const webpackConf = require('../config/webpack.dev')
 const compiler = webpack(webpackConf)
 
 
+const routers = require('./routers/index')
 
-//const routers = require('./routers/index')
+const views = require('koa-views')
 
 // 配置ctx.body解析中间件
 app.use(bodyParser())
-
 // 配置静态资源加载中间件
 app.use(koaStatic(
     path.join(__dirname , './../static')
@@ -43,10 +43,15 @@ app.use(hotMiddleware(compiler,{
     heartbeat: 10 * 1000
 }))
 
-
+// 加载模板引擎
+app.use(views(path.join(__dirname, '../static/views'), {
+    extension: 'html'
+}))
 // 初始化路由中间件
-//app.use(routers.routes()).use(routers.allowedMethods())
+
+app.use(routers.routes()).use(routers.allowedMethods())
 
 // 监听启动端口
-app.listen(3001)
-console.log(`the server is start at port 3001`)
+app.listen(3002)
+console.log(`the server is start at port 3002`)
+
