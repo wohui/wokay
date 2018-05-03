@@ -4,8 +4,9 @@
 
 const router = require('koa-router')()
 const userInfoController = require('../controllers/api');
-
+const categoryInfoController = require('../controllers/category/category')
 const routers = router
-    .get('/getUserInfo',userInfoController.getUserInfo)
-
+    .get('/getCategoryInfo',categoryInfoController.getCategoryInfo)
+    .get('/getUserInfo',userInfoController.getUserInfo) //查询类别信息
+    .post('/addCategoryInfo',categoryInfoController.addCategoryInfo)
 module.exports = routers;

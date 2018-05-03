@@ -1,21 +1,21 @@
 import React from "react";
-import {Layout} from 'element-react'
+import {Layout,Menu} from 'element-react'
 import {BrowserRouter,Link} from 'react-router-dom'
 
 import './header.css'
 class Header extends React.Component {
 
+    onSelect() {
+
+    }
     render() {
         return (
             <div>
-                <Layout.Row >
-                    <Layout.Col span="24">
-                        <div className="grid-content bg-purple-dark header-bg">
-                            <li><Link to="/home/">首页</Link></li>
-                            <li><Link to="/top/">排行榜</Link></li>
-                        </div>
-                    </Layout.Col>
-                </Layout.Row>
+                <Menu theme="dark" defaultActive="1" className="el-menu-demo" mode="horizontal" onSelect={this.onSelect.bind(this)}>
+                    <Menu.Item index="1"><Link to="/home/">首页</Link></Menu.Item>
+                    <Menu.Item index="2"><Link to="/top/">排行榜</Link></Menu.Item>
+                    <Menu.Item index="3"><Link to="/addCategory/">类别管理</Link></Menu.Item>
+                </Menu>
             </div>
         )
     }
