@@ -86,7 +86,6 @@ class AddCategory extends React.Component {
 
     //查询数据,列表显示用
     query() {
-
         //向后端请求数据
         axios.get('/api/getCategoryInfo', {
             params: {
@@ -132,11 +131,11 @@ class AddCategory extends React.Component {
                             <Form.Item label="类别名称" labelWidth="120" model={this.state.categoryForm}
                                        onSubmit={this.onSubmit.bind(this)}>
                                 <Input value={this.state.categoryForm.name}
-                                       onChange={this.onChange.bind(this, 'name')}></Input>
+                                       onChange={this.onChange.bind(this, 'name')}/>
                             </Form.Item>
                             <Form.Item label="创建人" labelWidth="120">
                                 <Input value={this.state.categoryForm.create_user}
-                                       onChange={this.onChange.bind(this, 'create_user')}></Input>
+                                       onChange={this.onChange.bind(this, 'create_user')}/>
                             </Form.Item>
                         </Form>
                     </Dialog.Body>

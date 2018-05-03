@@ -1,10 +1,6 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
-import {BrowserRouter} from 'react-router-dom'
-import {Button} from 'element-react'; //导入element-ui库
-import {Layout} from 'element-react'
+import {Layout,Button, Table, Icon, Tag, Dialog, Form, Input} from 'element-react'
 import {Carousel} from 'element-react'
-import {Table} from 'element-react'
 import 'element-theme-default' //导入element-ui默认主题
 
 import './HomePage.css'
@@ -13,6 +9,7 @@ require('es6-promise').polyfill();
 require('isomorphic-fetch');
 
 import banner from '../../../static/imgs/banner.jpg'
+import axios from "axios/index";
 export default class HomePage extends React.Component {
 
     constructor(props){
@@ -20,127 +17,177 @@ export default class HomePage extends React.Component {
         this.state = {
             columns: [
                 {
-                    label: "日期",
-                    prop: "date",
-                    width: 180
+                    type: 'index'
                 },
                 {
-                    label: "姓名",
-                    prop: "name",
-                    width: 180
+                    label: "标题",
+                    prop: "title",
+                    width: 320,
+                    render: function (data) {
+                        return (
+                            <span>
+            <span style={{marginLeft: '10px'}}>{data.title}</span>
+          </span>)
+                    }
                 },
                 {
-                    label: "地址",
-                    prop: "address"
+                    label: "类别",
+                    prop: "category",
+                    width: 100,
+                    render: function (data) {
+                        return <Tag>{data.category}</Tag>
+                    }
+                },
+                {
+                    label: "创建人",
+                    prop: "create_user",
+                    width: 120,
+                    render: function (data) {
+                        return (
+                            <span>
+            <span style={{marginLeft: '10px'}}>{data.create_user}</span>
+          </span>)
+                    }
+                },
+                {
+                    label: "创建时间",
+                    prop: "create_time",
+                    width: 220,
+                    render: function (data) {
+                        return (
+                            <span>
+            <Icon name="time"/>
+            <span style={{marginLeft: '10px'}}>{data.create_time}</span>
+          </span>)
+                    }
+                },
+                {
+                    label: "操作",
+                    prop: "address",
+                    width: 140,
+                    render: function () {
+                        return (
+                            <span>
+             <Button plain={true} type="info" size="small">编辑</Button>
+             <Button type="danger" size="small">删除</Button>
+            </span>
+                        )
+                    }
                 }
             ],
-            data: [{
-                date: '2016-05-02',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-                },
-                {
-                    date: '2016-05-03',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1516 弄'
-                }]
+            data: [],
+            addIssuesDialogVisible: false,
+            issuesForm: {
+            }
         }
 
-    } //constrautor end
-    getData(dispatch)  {
-        return fetch('/api/get/data.json')
-            .then((response) => response.json())
-            .then((json) => {
-                let hasError = false;
-                let text = '';
-
-                /// /controllers/list正常返回格式{errcode:0,errmsg:'',data:[]}
-                if (json.errcode !== 0) {
-                    hasError = true;
-                    text = json.errmsg;
-                } else {
-                    hasError = false;
-                    text = '';
-                }
-
-                // 网络异常 如断网
-                if (json.error) {
-                    dispatch(list({
-                        msg: strings.NET_ERROR,
-                        data: []
-                    }));
-                }
-                // 正常业务处理
-                else {
-                    dispatch(list({
-                        msg: hasError ? text : '',
-                        data: hasError ? [] : json.data
-                    }));
-                }
-            })
-            // 异常处理
-            .catch((err) => {
-                dispatch(list({
-                    msg: (__DEBUG__ && err.message) ? err.message : strings.NET_ERROR,
-                    data: []
-                }));
-            });
     }
-    componentDidMount (){
-        fetch('你的请求',{})
-            .then(res => {
-                this.setState({
-                    data: datas,
-                });
-            })
-            .catch(error => {
+    onSubmit(e) {
+        this.setState({
+            addIssuesDialogVisible: false
+        });
 
-            });
+        console.log("vvv："+this.state.issuesForm);
+
+        axios.post('/api/addIssue', {
+            data: this.state.issuesForm
+
+        }).then((res) => {
+            console.log("res:" + res)
+        }).catch((err) => {
+            console.log("res:" + err)
+        })
+        e.preventDefault();
     }
-    componentWillUnmount () {
-        this.setState = (state,callback)=>{
-            return;
-        };
+
+    onChange(key, value) {
+        this.state.issuesForm[key] = value;
+        this.forceUpdate();
+    }
+
+    addIssue(){
+        this.setState({
+            addIssuesDialogVisible: true
+        });
+    }
+    //查询数据,列表显示用
+    queryIssueInfo() {
+        //向后端请求数据
+        axios.get('/api/getIssueInfo', {
+            params: {
+                //ID: 12345
+            }
+        }).then((res) => {
+            this.setState({
+                data: res.data.data
+            }, () => {
+                console.log(this.state.data);
+            });
+        }).catch((error) => {
+            console.log("error:" + error)
+        });
     }
     render() {
 
         return (
             <div>
                 <Layout.Row>
-                    <Layout.Col span="24">
-                        <div className="grid-content bg-purple">
-                            <div className="demo-1 small">
-                                <div className="block">
-                                    <Carousel height="150px">
-                                        {
-                                            [1,2,3,4].map((item, index) => {
-                                                return (
-                                                    <Carousel.Item key={index}>
-                                                        <img src={banner} alt={"稍等片刻"}></img>
-                                                    </Carousel.Item>
-                                                )
-                                            })
-                                        }
-                                    </Carousel>
-                                </div>
-                            </div>
-                        </div>
-                    </Layout.Col>
-                </Layout.Row>
-
-                <Layout.Row>
-                    <Button onClick={this.getData} type="primary" icon="edit"></Button>
+                    <Button onClick={() => this.addIssue()} type="primary" icon="edit"></Button>
+                    <Button onClick={() => this.queryIssueInfo()} type="primary" icon="search"></Button>
                     <Layout.Col span="24">
                         <div className="grid-content bg-purple-light">
                             <Table
                                 style={{width: '100%'}}
                                 columns={this.state.columns}
-                                maxHeight={200}
                                 data={this.state.data}
+                                border={true}
+                                height={800}
+                                width={1000}
+                                highlightCurrentRow={true}
+                                onCurrentChange={item => {
+                                    console.log(item)
+                                }}
+
+
                             />
                         </div>
                     </Layout.Col>
                 </Layout.Row>
+
+                {/*新增issues对话框*/}
+                <Dialog
+                    title="新增"
+                    visible={this.state.addIssuesDialogVisible}
+                    onCancel={() => this.setState({addIssuesDialogVisible: false})}
+                >
+                    <Dialog.Body>
+                        <Form model={this.state.issuesForm}>
+                            <Form.Item label="标题" labelWidth="120" model={this.state.issuesForm}
+                                       onSubmit={this.onSubmit.bind(this)}>
+                                <Input value={this.state.issuesForm.title} onChange={this.onChange.bind(this, 'title')}/>
+                            </Form.Item>
+                            <Form.Item label="类别" labelWidth="120" model={this.state.issuesForm}
+                                       onSubmit={this.onSubmit.bind(this)}>
+                                <Input value={this.state.issuesForm.category}
+                                       onChange={this.onChange.bind(this, 'category')}/>
+                            </Form.Item>
+                            <Form.Item label="内容" labelWidth="120" model={this.state.issuesForm}
+                                       onSubmit={this.onSubmit.bind(this)}>
+                                <Input value={this.state.issuesForm.content}
+                                       onChange={this.onChange.bind(this, 'content')}/>
+                            </Form.Item>
+                            <Form.Item label="创建人" labelWidth="120">
+                                <Input value={this.state.issuesForm.create_user}
+                                       onChange={this.onChange.bind(this, 'create_user')}/>
+                            </Form.Item>
+                        </Form>
+                    </Dialog.Body>
+
+                    <Dialog.Footer className="dialog-footer">
+                        <Button onClick={() => this.setState({addIssuesDialogVisible: false})}>取 消</Button>
+                        <Button type="primary" nativeType="submit" onClick={this.onSubmit.bind(this)}>确 定</Button>
+                    </Dialog.Footer>
+                </Dialog>
             </div>
         )
     }

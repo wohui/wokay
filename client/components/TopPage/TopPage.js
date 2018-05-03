@@ -47,22 +47,7 @@ class TopPage extends React.Component {
         }
 
     }
-    componentDidMount (){
-        fetch('你的请求',{})
-            .then(res => {
-                this.setState({
-                    data: datas,
-                });
-            })
-            .catch(error => {
 
-            });
-    }
-    componentWillUnmount () {
-        this.setState = (state,callback)=>{
-            return;
-        };
-    }
 
     render() {
 
