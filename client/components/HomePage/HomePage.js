@@ -166,20 +166,34 @@ export default class HomePage extends React.Component {
                                        onSubmit={this.onSubmit.bind(this)}>
                                 <Input value={this.state.issuesForm.title} onChange={this.onChange.bind(this, 'title')}/>
                             </Form.Item>
-                            <Form.Item label="类别" labelWidth="120" model={this.state.issuesForm}
-                                       onSubmit={this.onSubmit.bind(this)}>
-                                <Input value={this.state.issuesForm.category}
-                                       onChange={this.onChange.bind(this, 'category')}/>
-                            </Form.Item>
+                            <Layout.Row>
+                                <Layout.Col span="12"><div className="grid-content bg-purple">
+                                    <Form.Item label="类别" labelWidth="120" model={this.state.issuesForm}
+                                               onSubmit={this.onSubmit.bind(this)}>
+                                        <Input value={this.state.issuesForm.category}
+                                               onChange={this.onChange.bind(this, 'category')}/>
+                                    </Form.Item>
+                                </div></Layout.Col>
+                                <Layout.Col span="12"><div className="grid-content bg-purple-light">
+                                    <Form.Item label="创建人" labelWidth="120">
+                                        <Input value={this.state.issuesForm.create_user}
+                                               onChange={this.onChange.bind(this, 'create_user')}/>
+                                    </Form.Item>
+                                </div></Layout.Col>
+                            </Layout.Row>
+
+
                             <Form.Item label="内容" labelWidth="120" model={this.state.issuesForm}
                                        onSubmit={this.onSubmit.bind(this)}>
-                                <Input value={this.state.issuesForm.content}
-                                       onChange={this.onChange.bind(this, 'content')}/>
+                                <Input
+                                    type="textarea"
+                                    autosize={{ minRows: 6, maxRows: 10}}
+                                    placeholder="请输入内容"
+                                    value={this.state.issuesForm.content}
+                                    onChange={this.onChange.bind(this, 'content')}
+                                />
                             </Form.Item>
-                            <Form.Item label="创建人" labelWidth="120">
-                                <Input value={this.state.issuesForm.create_user}
-                                       onChange={this.onChange.bind(this, 'create_user')}/>
-                            </Form.Item>
+
                         </Form>
                     </Dialog.Body>
 
