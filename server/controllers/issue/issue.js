@@ -41,7 +41,6 @@ const doAddIssue = function (data){
         pool.connect().then(client=>{
             //获取当前时间
             const currentTime = moment().format('YYYY-DD-MM HH:mm:ss');
-            console.log(currentTime)
             // insert 数据
             client.query("insert into t_issues_info (title,category,content,create_user,create_time) VALUES($1,$2,$3,$4,$5)",[data.title,data.category,data.content,data.create_user,currentTime]).then(res=>{
                 var value = res

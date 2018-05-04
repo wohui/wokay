@@ -8,7 +8,7 @@ const categoryInfoController = require('../controllers/category/category')
 const issueController = require('../controllers/issue/issue') //
 const routers = router
     .get('/getCategoryInfo',categoryInfoController.getCategoryInfo)
-    .get('/getUserInfo',userInfoController.getUserInfo) //查询类别信息
+    .get('/getAllCategoryName',categoryInfoController.getAllCategoryName)
     .post('/addCategoryInfo',categoryInfoController.addCategoryInfo)
     .post('/addIssue',issueController.addIssue)
     .get('/getIssueInfo',issueController.getIssueInfo)

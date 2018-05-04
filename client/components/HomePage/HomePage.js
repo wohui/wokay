@@ -1,5 +1,5 @@
 import React from 'react'
-import {Layout,Button, Table, Icon, Tag, Dialog, Form, Input} from 'element-react'
+import {Layout,Button, Table, Icon, Tag, Dialog, Form, Select,Input} from 'element-react'
 
 import 'element-theme-default' //导入element-ui默认主题
 
@@ -75,28 +75,74 @@ export default class HomePage extends React.Component {
                     }
                 }
             ],
-            data: [],
+            /**
+             * form表单校验规则
+             */
+            rules: {
+                title: [
+                    {required: true, message: '请输入标题', trigger: 'blur'}
+                ],
+                category: [
+                    {required: true, message: '请选择类别', trigger: 'change'}
+                ],
+                content: [
+                    {required: true, message: '请输入内容', trigger: 'change'}
+                ],
+            },
+            data: [], //issue数据
             addIssuesDialogVisible: false,
             issuesForm: {
-            }
+            },
+            categoryValue: [],
+            categoryOptions:[],//类别下拉框选项数据
         }
 
     }
-    onSubmit(e) {
-        this.setState({
-            addIssuesDialogVisible: false
-        });
 
-        console.log("vvv："+this.state.issuesForm);
-
-        axios.post('/api/addIssue', {
-            data: this.state.issuesForm
-
+    componentDidMount() {
+        console.log('Component DID MOUNT!')
+        //向后端请求类型名称数据
+        axios.get('/api/getAllCategoryName', {
+            params: {
+                //ID: 12345
+            }
         }).then((res) => {
-            console.log("res:" + res)
-        }).catch((err) => {
-            console.log("res:" + err)
-        })
+            this.setState({
+                categoryOptions: res.data.data
+            }, () => {
+                console.log(res.data.data);
+            });
+        }).catch((error) => {
+            console.log("error:" + error)
+        });
+    }
+
+    /**
+     * 表单提交
+     * */
+
+    onSubmit(e) {
+        /**
+         * 验证表单规则
+         * */
+        this.refs.issueForm.validate((valid) => {
+            if (valid) {
+                this.setState({
+                    addIssuesDialogVisible: false
+                });
+                axios.post('/api/addIssue', {
+                    data: this.state.issuesForm
+
+                }).then((res) => {
+                    console.log("res:" + res)
+                }).catch((err) => {
+                    console.log("res:" + err)
+                })
+            } else {
+                console.log('表单校验不通过');
+                return false;
+            }
+        });
         e.preventDefault();
     }
 
@@ -120,8 +166,6 @@ export default class HomePage extends React.Component {
         }).then((res) => {
             this.setState({
                 data: res.data.data
-            }, () => {
-                console.log(this.state.data);
             });
         }).catch((error) => {
             console.log("error:" + error)
@@ -161,17 +205,22 @@ export default class HomePage extends React.Component {
                     onCancel={() => this.setState({addIssuesDialogVisible: false})}
                 >
                     <Dialog.Body>
-                        <Form model={this.state.issuesForm}>
-                            <Form.Item label="标题" labelWidth="120" model={this.state.issuesForm}
+                        <Form ref="issueForm" model={this.state.issuesForm} rules={this.state.rules}>
+                            <Form.Item label="标题" labelWidth="120" prop="title" model={this.state.issuesForm}
                                        onSubmit={this.onSubmit.bind(this)}>
                                 <Input value={this.state.issuesForm.title} onChange={this.onChange.bind(this, 'title')}/>
                             </Form.Item>
                             <Layout.Row>
                                 <Layout.Col span="12"><div className="grid-content bg-purple">
-                                    <Form.Item label="类别" labelWidth="120" model={this.state.issuesForm}
+                                    <Form.Item label="类别" labelWidth="120" prop="category" model={this.state.issuesForm}
                                                onSubmit={this.onSubmit.bind(this)}>
-                                        <Input value={this.state.issuesForm.category}
-                                               onChange={this.onChange.bind(this, 'category')}/>
+                                        <Select value={this.state.issuesForm.category} filterable={true} onChange={this.onChange.bind(this, 'category')}>
+                                            {
+                                                this.state.categoryOptions.map(el => {
+                                                    return <Select.Option key={el.name} label={el.name} value={el.name} />
+                                                })
+                                            }
+                                        </Select>
                                     </Form.Item>
                                 </div></Layout.Col>
                                 <Layout.Col span="12"><div className="grid-content bg-purple-light">
@@ -183,7 +232,7 @@ export default class HomePage extends React.Component {
                             </Layout.Row>
 
 
-                            <Form.Item label="内容" labelWidth="120" model={this.state.issuesForm}
+                            <Form.Item label="内容" labelWidth="120" prop="content" model={this.state.issuesForm}
                                        onSubmit={this.onSubmit.bind(this)}>
                                 <Input
                                     type="textarea"

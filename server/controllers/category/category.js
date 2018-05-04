@@ -41,7 +41,6 @@ const doAddCategoryInfo = function (category_name,create_user){
         pool.connect().then(client=>{
             //获取当前时间
             const currentTime = moment().format('YYYY-DD-MM HH:mm:ss');
-            console.log(currentTime)
             // insert 数据
             client.query("insert into t_category_info (name,create_user,create_time) VALUES($1,$2,$3)",[category_name,create_user,currentTime]).then(res=>{
                 var value = res
@@ -61,6 +60,38 @@ const addCategoryInfo = async function(category_name,create_user){
         console.log("出错了啊:"+err)
     }
 }
+/**
+ *
+ * @returns {Promise<any>}
+ */
+const doGetAllCategoryName = function (){
+    var p = new Promise(function(resolve, reject){
+        //做一些异步操作
+        pool.connect().then(client=>{
+            //获取当前时间
+            const currentTime = moment().format('YYYY-DD-MM HH:mm:ss');
+            // insert 数据
+            client.query("select name from t_category_info ").then(res=>{
+                var value = res.rows
+                resolve(value)
+                return res
+            })
+        })
+    });
+    return p;
+}
+
+const getAllCategoryName = async function(){
+    try {
+        data = await doGetAllCategoryName(); //设置字段
+        //如果返回 为何拿不到返回值
+        //return value
+    }catch (err) {
+        console.log("出错了啊:"+err)
+    }
+}
+
+
 
 module.exports = {
     async getCategoryInfo( ctx ) {
@@ -81,7 +112,16 @@ module.exports = {
             success: true,
             data: data
         }
-
+    },
+    /**
+     * 查询category_name
+     */
+    async getAllCategoryName(ctx){
+        await getAllCategoryName();
+        ctx.body = {
+            success: true,
+            data: data
+        }
     }
 
 }
