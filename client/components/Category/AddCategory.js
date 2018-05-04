@@ -3,7 +3,7 @@ import {Button, Table, Icon, Tag, Dialog, Form, Input} from 'element-react'
 
 import './addCategory.css'
 import axios from 'axios'
-
+const moment = require('moment')
 class AddCategory extends React.Component {
     constructor(props) {
         super(props);
@@ -16,19 +16,19 @@ class AddCategory extends React.Component {
                 {
                     label: "添加日期",
                     prop: "date",
-                    width: 150,
+                    width: 200,
                     render: function (data) {
                         return (
                             <span>
             <Icon name="time"/>
-            <span style={{marginLeft: '10px'}}>{data.create_time}</span>
+            <span style={{marginLeft: '10px'}}>{moment(data.create_time).format('YYYY-MM-DD HH:mm:ss')}</span>
           </span>)
                     }
                 },
                 {
                     label: "类别名称",
                     prop: "name",
-                    width: 160,
+                    width: 100,
                     render: function (data) {
                         return <Tag>{data.name}</Tag>
                     }
@@ -36,7 +36,7 @@ class AddCategory extends React.Component {
                 {
                     label: "操作",
                     prop: "address",
-                    width: 220,
+                    width: 140,
                     render: function () {
                         return (
                             <span>

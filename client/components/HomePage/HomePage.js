@@ -1,13 +1,13 @@
 import React from 'react'
 import {Layout,Button, Table, Icon, Tag, Dialog, Form, Input} from 'element-react'
-import {Carousel} from 'element-react'
+
 import 'element-theme-default' //导入element-ui默认主题
 
 import './HomePage.css'
 
 require('es6-promise').polyfill();
 require('isomorphic-fetch');
-
+const moment = require('moment');
 import banner from '../../../static/imgs/banner.jpg'
 import axios from "axios/index";
 export default class HomePage extends React.Component {
@@ -52,12 +52,12 @@ export default class HomePage extends React.Component {
                 {
                     label: "创建时间",
                     prop: "create_time",
-                    width: 220,
+                    width: 200,
                     render: function (data) {
                         return (
                             <span>
             <Icon name="time"/>
-            <span style={{marginLeft: '10px'}}>{data.create_time}</span>
+            <span style={{marginLeft: '10px'}}>{moment(data.create_time).format('YYYY-MM-DD HH:mm:ss')}</span>
           </span>)
                     }
                 },
