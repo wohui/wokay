@@ -36,13 +36,14 @@ class AddCategory extends React.Component {
                 {
                     label: "操作",
                     prop: "address",
-                    width: 140,
-                    render: function () {
+                    width: 220,
+                    render: (row, column, index) => {
                         return (
                             <span>
-             <Button plain={true} type="info" size="small">编辑</Button>
-             <Button type="danger" size="small">删除</Button>
-            </span>
+                                 <Button plain={true} type="info" size="small" onClick={this.viewRow.bind(this, index,row)}>查看</Button>
+                                 <Button plain={true} type="info" size="small" onClick={this.editRow.bind(this, index,row)}>编辑</Button>
+                                 <Button type="danger" size="small" onClick={this.deleteRow.bind(this, index,row)}>删除</Button>
+                            </span>
                         )
                     }
                 }
@@ -50,25 +51,47 @@ class AddCategory extends React.Component {
             data: [],
             addDialogVisible: false,
             categoryForm: {
-            }
+            },
+            /**
+             * form表单校验规则
+             */
+            rules: {
+                name: [
+                    {required: true, message: '请输入类别名称', trigger: 'blur'}
+                ],
+                create_user: [
+                    {required: true, message: '请输入创建人', trigger: 'blur'}
+                ],
+            },
         }
     }
 
-    onSubmit(e) {
-        this.setState({
-            addDialogVisible: false
-        });
-        axios.post('/api/addCategoryInfo', {
-            data: {
-                category_name: this.state.categoryForm.name,
-                create_user: this.state.categoryForm.create_user,
-            }
-        }).then((res) => {
-            console.log("res:" + res)
-        }).catch((err) => {
-            console.log("res:" + err)
-        })
 
+    onSubmit(e) {
+
+        /**
+         * 验证表单规则
+         * */
+        this.refs.categoryForm.validate((valid) => {
+            if (valid) {
+                this.setState({
+                    addDialogVisible: false
+                });
+                axios.post('/api/addCategoryInfo', {
+                    data: {
+                        category_name: this.state.categoryForm.name,
+                        create_user: this.state.categoryForm.create_user,
+                    }
+                }).then((res) => {
+                    console.log("res:" + res)
+                }).catch((err) => {
+                    console.log("res:" + err)
+                })
+            } else {
+                console.log('表单校验不通过');
+                return false;
+            }
+        });
 
         e.preventDefault();
     }
@@ -95,11 +118,37 @@ class AddCategory extends React.Component {
             this.setState({
                 data: res.data.data
             }, () => {
-                console.log(this.state.data);
+
             });
         }).catch((error) => {
             console.log("error:" + error)
         });
+    }
+
+    /**
+     * 查看
+     */
+    viewRow(index,row){
+        console.log("edit_index"+row.id)
+        console.log("edit_index"+row.name)
+    }
+    /**
+     * 编辑方法
+     **/
+    editRow(index,row){
+        console.log("edit_index"+row.id)
+        console.log("edit_index"+row.name)
+    }
+    /**
+     * 删除行
+     * */
+    deleteRow(index){
+        const { data } = this.state;
+        data.splice(index, 1); //从数组中删除一个元素
+        this.setState({
+            data: [...data]
+        })
+        console.log("index"+index)
     }
 
     render() {
@@ -115,9 +164,6 @@ class AddCategory extends React.Component {
                     height={600}
                     width={800}
                     highlightCurrentRow={true}
-                    onCurrentChange={item => {
-                        console.log(item)
-                    }}
                 />
 
                 {/*新增类别对话框*/}
@@ -127,13 +173,13 @@ class AddCategory extends React.Component {
                     onCancel={() => this.setState({addDialogVisible: false})}
                 >
                     <Dialog.Body>
-                        <Form model={this.state.categoryForm}>
-                            <Form.Item label="类别名称" labelWidth="120" model={this.state.categoryForm}
+                        <Form ref="categoryForm" model={this.state.categoryForm} rules={this.state.rules}>
+                            <Form.Item label="类别名称" labelWidth="120" model={this.state.categoryForm} prop="name"
                                        onSubmit={this.onSubmit.bind(this)}>
                                 <Input value={this.state.categoryForm.name}
                                        onChange={this.onChange.bind(this, 'name')}/>
                             </Form.Item>
-                            <Form.Item label="创建人" labelWidth="120">
+                            <Form.Item label="创建人" labelWidth="120"  prop="create_user">
                                 <Input value={this.state.categoryForm.create_user}
                                        onChange={this.onChange.bind(this, 'create_user')}/>
                             </Form.Item>

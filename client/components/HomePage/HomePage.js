@@ -64,13 +64,14 @@ export default class HomePage extends React.Component {
                 {
                     label: "操作",
                     prop: "address",
-                    width: 140,
-                    render: function () {
+                    width: 210,
+                    render:  (row, column, index) =>{
                         return (
                             <span>
-             <Button plain={true} type="info" size="small">编辑</Button>
-             <Button type="danger" size="small">删除</Button>
-            </span>
+                                <Button plain={true} type="info" size="small" onClick={this.viewRow.bind(this, index,row)}>查看</Button>
+                                <Button plain={true} type="info" size="small" onClick={this.editRow.bind(this, index,row)}>编辑</Button>
+                                <Button type="danger" size="small" onClick={this.deleteRow.bind(this, index,row)}>删除</Button>
+                            </span>
                         )
                     }
                 }
@@ -171,6 +172,32 @@ export default class HomePage extends React.Component {
             console.log("error:" + error)
         });
     }
+
+    /**
+     * 查看
+     */
+    viewRow(index,row){
+        console.log("edit_index"+row.id)
+        console.log("edit_index"+row.name)
+    }
+    /**
+     * 编辑方法
+     **/
+    editRow(index,row){
+        console.log("edit_index"+row.id)
+        console.log("edit_index"+row.name)
+    }
+    /**
+     * 删除行
+     * */
+    deleteRow(index){
+        const { data } = this.state;
+        data.splice(index, 1); //从数组中删除一个元素
+        this.setState({
+            data: [...data]
+        })
+        console.log("index"+index)
+    }
     render() {
 
         return (
@@ -188,11 +215,6 @@ export default class HomePage extends React.Component {
                                 height={800}
                                 width={1000}
                                 highlightCurrentRow={true}
-                                onCurrentChange={item => {
-                                    console.log(item)
-                                }}
-
-
                             />
                         </div>
                     </Layout.Col>

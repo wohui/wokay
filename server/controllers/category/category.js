@@ -68,8 +68,6 @@ const doGetAllCategoryName = function (){
     var p = new Promise(function(resolve, reject){
         //做一些异步操作
         pool.connect().then(client=>{
-            //获取当前时间
-            const currentTime = moment().format('YYYY-DD-MM HH:mm:ss');
             // insert 数据
             client.query("select name from t_category_info ").then(res=>{
                 var value = res.rows
