@@ -142,13 +142,22 @@ class AddCategory extends React.Component {
     /**
      * 删除行
      * */
-    deleteRow(index){
-        const { data } = this.state;
-        data.splice(index, 1); //从数组中删除一个元素
-        this.setState({
-            data: [...data]
-        })
-        console.log("index"+index)
+    deleteRow(index,row){
+        //请求删除接口
+        axios.get('/api/deleteCategoryById', {
+            params: {
+                id:row.id,
+            }
+        }).then((res) => {
+            const { data } = this.state;
+            data.splice(index, 1); //从数组中删除一个元素
+            this.setState({
+                data: [...data]
+            });
+        }).catch((error) => {
+            console.log("error:" + error)
+        });
+
     }
 
     render() {

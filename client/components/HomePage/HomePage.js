@@ -190,13 +190,23 @@ export default class HomePage extends React.Component {
     /**
      * 删除行
      * */
-    deleteRow(index){
-        const { data } = this.state;
-        data.splice(index, 1); //从数组中删除一个元素
-        this.setState({
-            data: [...data]
-        })
-        console.log("index"+index)
+    deleteRow(index,row){
+        //向后端请求删除
+        axios.get('/api/deleteIssue', {
+            params: {
+               id:row.id
+            }
+        }).then((res) => {
+            //删除成功后,页面上不显示
+            const { data } = this.state;
+            data.splice(index, 1); //从数组中删除一个元素
+            this.setState({
+                data: [...data]
+            })
+        }).catch((error) => {
+            console.log("error:" + error)
+        });
+
     }
     render() {
 

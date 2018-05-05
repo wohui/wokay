@@ -88,7 +88,35 @@ const getAllCategoryName = async function(){
         console.log("出错了啊:"+err)
     }
 }
+    /**
+    *通过id删除类别
+    * @returns {Promise<any>}
+    */
+const doDeleteCategoryById = function (req_data){
+    var p = new Promise(function(resolve, reject){
+        //做一些异步操作
+        pool.connect().then(client=>{
+            const category_id = req_data.id;
+            // insert 数据
+            client.query("delete from t_category_info where id = $1",[category_id]).then(res=>{
+                var value = res.rows
+                resolve(value)
+                return res
+            })
+        })
+    });
+    return p;
+}
 
+const deleteCategoryById = async function(req_data){
+    try {
+        data = await doDeleteCategoryById(req_data); //设置字段
+        //如果返回 为何拿不到返回值
+        //return value
+    }catch (err) {
+        console.log("deleteCategoryById出错了啊:"+err)
+    }
+}
 
 
 module.exports = {
@@ -116,6 +144,17 @@ module.exports = {
      */
     async getAllCategoryName(ctx){
         await getAllCategoryName();
+        ctx.body = {
+            success: true,
+            data: data
+        }
+    },
+    /**
+     * 通过类别id删除类别
+     */
+    async deleteCategoryById(ctx){
+        const req_data = ctx.request.query;
+        await deleteCategoryById(req_data);
         ctx.body = {
             success: true,
             data: data

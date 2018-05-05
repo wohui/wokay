@@ -9,7 +9,9 @@ const issueController = require('../controllers/issue/issue') //
 const routers = router
     .get('/getCategoryInfo',categoryInfoController.getCategoryInfo)
     .get('/getAllCategoryName',categoryInfoController.getAllCategoryName)
+    .get('/deleteCategoryById',categoryInfoController.deleteCategoryById)
     .post('/addCategoryInfo',categoryInfoController.addCategoryInfo)
     .post('/addIssue',issueController.addIssue)
     .get('/getIssueInfo',issueController.getIssueInfo)
+    .get('/deleteIssue',issueController.deleteIssue)
 module.exports = routers;
