@@ -40,7 +40,7 @@ export default class HomePage extends React.Component {
                 },
                 {
                     label: "创建人",
-                    prop: "create_user",
+                    //prop: "create_user",
                     width: 120,
                     render: function (data) {
                         return (
@@ -91,13 +91,9 @@ export default class HomePage extends React.Component {
                 ],
             },
             data: [], //issue数据
-            addIssuesDialogVisible: false,
-            editIssuesDialogVisible:false,//编辑issue对话框
-            issuesForm: {},//待提交表单数据
-            editIssueForm:{
-                category:"难题"
-            },//正在被编辑中表单数据
-            editCategoryValue:"还是",
+            issueDialogVisible: false,
+            issueFormTitle:"",
+            issueForm: {},//待提交表单数据
             categoryValue: [],
             categoryOptions:[],//类别下拉框选项数据
         }
@@ -135,11 +131,11 @@ export default class HomePage extends React.Component {
         this.refs.issueForm.validate((valid) => {
             if (valid) {
                 axios.post('/api/addIssue', {
-                    data: this.state.issuesForm
+                    data: this.state.issueForm
 
                 }).then((res) => {
                     this.setState({
-                        editIssuesDialogVisible: false
+                        issueDialogVisible: false
                     });
                     console.log("res:" + res)
                 }).catch((err) => {
@@ -152,51 +148,21 @@ export default class HomePage extends React.Component {
         });
         e.preventDefault();
     }
-    /**
-     * 编辑表单提交
-     * */
-
-    onEditIssueSubmit(e) {
-        /**
-         * 验证表单规则
-         * */
-        this.refs.editIssueForm.validate((valid) => {
-            if (valid) {
-                this.setState({
-                    ed: false
-                });
-                axios.post('/api/addIssue', {
-                    data: this.state.editIssueForm
-
-                }).then((res) => {
-                    console.log("res:" + res)
-                }).catch((err) => {
-                    console.log("res:" + err)
-                })
-            } else {
-                console.log('表单校验不通过');
-                return false;
-            }
-        });
-        e.preventDefault();
-    }
-
-    onChange(key, value) {
-        this.state.issuesForm[key] = value;
-        this.forceUpdate();
-    }
-    onEditIssueChange(key, value) {
-        this.state.editIssueForm[key] = value;
-        this.forceUpdate();
-    }
-    onEditCategoryChange(value){
+    onCancel(e){
+        console.log("onCancel"+this.state.issueForm.title);
         this.setState({
-            editIssueForm: Object.assign({}, this.state.editIssueForm, { category: value})
+            issueDialogVisible: false,
         });
     }
+    onChange(key, value) {
+        this.state.issueForm[key] = value;
+        this.forceUpdate();
+    }
+
     addIssue(){
         this.setState({
-            addIssuesDialogVisible: true,
+            formTitle:"新增",
+            issueDialogVisible: true,
         });
     }
     //查询数据,列表显示用
@@ -220,10 +186,8 @@ export default class HomePage extends React.Component {
      */
     viewRow(index,row){
         this.setState({
-            editIssueForm:row,
-            editCategoryValue:row.category,
-        },()=>{
-            console.log(this.state.editCategoryValue)
+            formTitle:"查看详情",
+            issueDialogVisible:true,
         });
 
     }
@@ -232,11 +196,10 @@ export default class HomePage extends React.Component {
      **/
 
     editRow(index,row){
-
         this.setState({
-            editIssueForm:row,
-            editCategoryValue:"难题",
-            editIssuesDialogVisible: true,
+            formTitle:"编辑",
+            issueForm:row,
+            issueDialogVisible: true,
         });
 
 
@@ -263,18 +226,10 @@ export default class HomePage extends React.Component {
 
     }
     render() {
-        console.log("render:-"+typeof (this.state.editIssueForm.category)+"value:___"+this.state.editIssueForm.category)
         return (
 
             <div>
                 <Layout.Row>
-                    <Select value={this.state.editCategoryValue} filterable={true} onChange={this.onChange.bind(this, 'category')}>
-                        {
-                            this.state.categoryOptions.map(el => {
-                                return <Select.Option key={el.name} label={el.name} value={el.name} />
-                            })
-                        }
-                    </Select>
                     <Button onClick={() => this.addIssue()} type="primary" icon="edit"></Button>
                     <Button onClick={() => this.queryIssueInfo()} type="primary" icon="search"></Button>
                     <Layout.Col span="24">
@@ -292,23 +247,23 @@ export default class HomePage extends React.Component {
                     </Layout.Col>
                 </Layout.Row>
 
-                {/*新增issues对话框*/}
+                {/*新增issue对话框*/}
                 <Dialog
-                    title="新增"
-                    visible={this.state.addIssuesDialogVisible}
-                    onCancel={() => this.setState({addIssuesDialogVisible: false})}
+                    title={this.state.formTitle}
+                    visible={this.state.issueDialogVisible}
+                    onCancel={() => this.setState({issueDialogVisible: false})}
                 >
                     <Dialog.Body>
-                        <Form ref="issueForm" model={this.state.issuesForm} rules={this.state.rules}>
-                            <Form.Item label="标题" labelWidth="120" prop="title" model={this.state.issuesForm}
+                        <Form ref="issueForm" model={this.state.issueForm} rules={this.state.rules}>
+                            <Form.Item label="标题" labelWidth="120" prop="title" model={this.state.issueForm}
                                        onSubmit={this.onSubmit.bind(this)}>
-                                <Input value={this.state.issuesForm.title} onChange={this.onChange.bind(this, 'title')}/>
+                                <Input value={this.state.issueForm.title} onChange={this.onChange.bind(this, 'title')}/>
                             </Form.Item>
                             <Layout.Row>
                                 <Layout.Col span="12"><div className="grid-content bg-purple">
-                                    <Form.Item label="类别" labelWidth="120" prop="category" model={this.state.issuesForm}
+                                    <Form.Item label="类别" labelWidth="120" prop="category" model={this.state.issueForm}
                                                onSubmit={this.onSubmit.bind(this)}>
-                                        <Select value={this.state.issuesForm.category} filterable={true} onChange={this.onChange.bind(this, 'category')}>
+                                        <Select value={this.state.issueForm.category} filterable={true} onChange={this.onChange.bind(this, 'category')}>
                                             {
                                                 this.state.categoryOptions.map(el => {
                                                     return <Select.Option key={el.name} label={el.name} value={el.name} />
@@ -319,20 +274,19 @@ export default class HomePage extends React.Component {
                                 </div></Layout.Col>
                                 <Layout.Col span="12"><div className="grid-content bg-purple-light">
                                     <Form.Item label="创建人" labelWidth="120">
-                                        <Input value={this.state.issuesForm.create_user}
+                                        <Input value={this.state.issueForm.create_user}
                                                onChange={this.onChange.bind(this, 'create_user')}/>
                                     </Form.Item>
                                 </div></Layout.Col>
                             </Layout.Row>
 
-
-                            <Form.Item label="内容" labelWidth="120" prop="content" model={this.state.issuesForm}
+                            <Form.Item label="内容" labelWidth="120" prop="content" model={this.state.issueForm}
                                        onSubmit={this.onSubmit.bind(this)}>
                                 <Input
                                     type="textarea"
                                     autosize={{ minRows: 6, maxRows: 10}}
                                     placeholder="请输入内容"
-                                    value={this.state.issuesForm.content}
+                                    value={this.state.issueForm.content}
                                     onChange={this.onChange.bind(this, 'content')}
                                 />
                             </Form.Item>
@@ -341,65 +295,8 @@ export default class HomePage extends React.Component {
                     </Dialog.Body>
 
                     <Dialog.Footer className="dialog-footer">
-                        <Button onClick={() => this.setState({addIssuesDialogVisible: false})}>取 消</Button>
+                        <Button onClick={this.onCancel.bind(this)}>取 消</Button>
                         <Button type="primary" nativeType="submit" onClick={this.onSubmit.bind(this)}>确 定</Button>
-                    </Dialog.Footer>
-                </Dialog>
-
-
-                /**
-                * 编辑issue dialog
-                */
-                <Dialog
-                    title="编辑"
-                    visible={this.state.editIssuesDialogVisible}
-                    onCancel={() => this.setState({editIssuesDialogVisible: false})}
-                >
-                    <Dialog.Body>
-                        <Form ref="editIssueForm" model={this.state.editIssueForm} rules={this.state.rules}>
-                            <Form.Item label="标题" labelWidth="120" prop="title" model={this.state.editIssueForm}
-                                       onSubmit={this.onEditIssueSubmit.bind(this)}>
-                                <Input value={this.state.editIssueForm.title} onChange={this.onEditIssueChange.bind(this, 'title')}/>
-                            </Form.Item>
-                            <Layout.Row>
-                                <Layout.Col span="12"><div className="grid-content bg-purple">
-                                    <Form.Item label="类别" labelWidth="120" prop="category" model={this.state.editIssueForm}
-                                               onSubmit={this.onEditIssueSubmit.bind(this)}>
-                                        <Select value={this.state.editIssueForm.category} filterable={true} onChange={this.onEditIssueChange.bind(this,'category')}>
-                                            {
-                                                this.state.categoryOptions.map(el => {
-                                                    return <Select.Option key={el.name} label={el.name} value={el.name} />
-                                                })
-                                            }
-                                        </Select>
-                                    </Form.Item>
-                                </div></Layout.Col>
-                                <Layout.Col span="12"><div className="grid-content bg-purple-light">
-                                    <Form.Item label="创建人" labelWidth="120">
-                                        <Input value={this.state.editIssueForm.create_user}
-                                               onChange={this.onEditIssueChange.bind(this, 'create_user')}/>
-                                    </Form.Item>
-                                </div></Layout.Col>
-                            </Layout.Row>
-
-
-                            <Form.Item label="内容" labelWidth="120" prop="content" model={this.state.editIssueForm}
-                                       onSubmit={this.onEditIssueSubmit.bind(this)}>
-                                <Input
-                                    type="textarea"
-                                    autosize={{ minRows: 6, maxRows: 10}}
-                                    placeholder="请输入内容"
-                                    value={this.state.editIssueForm.content}
-                                    onChange={this.onEditIssueChange.bind(this, 'content')}
-                                />
-                            </Form.Item>
-
-                        </Form>
-                    </Dialog.Body>
-
-                    <Dialog.Footer className="dialog-footer">
-                        <Button onClick={() => this.setState({editIssuesDialogVisible: false})}>取 消</Button>
-                        <Button type="primary" nativeType="submit" onClick={this.onEditIssueSubmit.bind(this)}>确 定</Button>
                     </Dialog.Footer>
                 </Dialog>
 
