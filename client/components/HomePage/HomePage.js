@@ -1,5 +1,5 @@
 import React from 'react'
-import {Layout,Button, Table, Icon, Tag, Dialog, Form, Select,Input} from 'element-react'
+import {Layout, Button, Table, Icon, Tag, Dialog, Form, Select, Input} from 'element-react'
 
 import 'element-theme-default' //导入element-ui默认主题
 
@@ -10,9 +10,10 @@ require('isomorphic-fetch');
 const moment = require('moment');
 import banner from '../../../static/imgs/banner.jpg'
 import axios from "axios/index";
+
 export default class HomePage extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             columns: [
@@ -65,12 +66,15 @@ export default class HomePage extends React.Component {
                     label: "操作",
                     prop: "address",
                     width: 210,
-                    render:  (row, column, index) =>{
+                    render: (row, column, index) => {
                         return (
                             <span>
-                                <Button plain={true} type="info" size="small" onClick={this.viewRow.bind(this, index,row)}>查看</Button>
-                                <Button plain={true} type="info" size="small" onClick={this.editRow.bind(this, index,row)}>编辑</Button>
-                                <Button type="danger" size="small" onClick={this.deleteRow.bind(this, index,row)}>删除</Button>
+                                <Button plain={true} type="info" size="small"
+                                        onClick={this.viewRow.bind(this, index, row)}>查看</Button>
+                                <Button plain={true} type="info" size="small"
+                                        onClick={this.editRow.bind(this, index, row)}>编辑</Button>
+                                <Button type="danger" size="small"
+                                        onClick={this.deleteRow.bind(this, index, row)}>删除</Button>
                             </span>
                         )
                     }
@@ -92,16 +96,19 @@ export default class HomePage extends React.Component {
             },
             data: [], //issue数据
             issueDialogVisible: false,
-            issueFormTitle:"",
+            issueFormTitle: "",
+            issueFormType: 0, //提交类型,0-add 1-修改 2 -查看
             issueForm: {},//待提交表单数据
             categoryValue: [],
-            categoryOptions:[],//类别下拉框选项数据
+            categoryOptions: [],//类别下拉框选项数据
         }
 
     }
-    componentWillMount(){
+
+    componentWillMount() {
 
     }
+
     componentDidMount() {
         //向后端请求类型名称数据
 
@@ -128,43 +135,72 @@ export default class HomePage extends React.Component {
         /**
          * 验证表单规则
          * */
-        this.refs.issueForm.validate((valid) => {
-            if (valid) {
-                axios.post('/api/addIssue', {
-                    data: this.state.issueForm
+        console.log("type" + this.state.issueFormType)
+        if (0 == this.state.issueFormType) { //新增
+            this.refs.issueForm.validate((valid) => {
+                if (valid) {
+                    axios.post('/api/addIssue', {
+                        data: this.state.issueForm
 
-                }).then((res) => {
-                    this.setState({
-                        issueDialogVisible: false
-                    });
-                    console.log("res:" + res)
-                }).catch((err) => {
-                    console.log("res:" + err)
-                })
-            } else {
-                console.log('表单校验不通过');
-                return false;
-            }
-        });
-        e.preventDefault();
+                    }).then((res) => {
+                        this.setState({
+                            issueDialogVisible: false
+                        });
+                        console.log("res:" + res)
+                    }).catch((err) => {
+                        console.log("res:" + err)
+                    })
+                } else {
+                    console.log('表单校验不通过');
+                    return false;
+                }
+            });
+            e.preventDefault();
+        } else { //更新
+            this.refs.issueForm.validate((valid) => {
+                if (valid) {
+                    axios.post('/api/updateIssue', {
+                        data: this.state.issueForm
+                    }).then((res) => {
+                        this.setState({
+                            issueDialogVisible: false
+                        });
+                        console.log("res:" + res)
+                    }).catch((err) => {
+                        console.log("res:" + err)
+                    })
+                } else {
+                    console.log('表单校验不通过');
+                    return false;
+                }
+            });
+            e.preventDefault();
+        }
+
     }
-    onCancel(e){
-        console.log("onCancel"+this.state.issueForm.title);
+
+    onCancel(e) {
+        console.log("onCancelData" + this.state.data.toString());
+        this.queryIssueInfo();
         this.setState({
             issueDialogVisible: false,
+
         });
     }
+
     onChange(key, value) {
         this.state.issueForm[key] = value;
         this.forceUpdate();
     }
 
-    addIssue(){
+    addIssue() {
         this.setState({
-            formTitle:"新增",
+            issueFormTitle: "新增",
+            issueFormType: 0,
             issueDialogVisible: true,
         });
     }
+
     //查询数据,列表显示用
     queryIssueInfo() {
         //向后端请求数据
@@ -184,38 +220,42 @@ export default class HomePage extends React.Component {
     /**
      * 查看
      */
-    viewRow(index,row){
+    viewRow(index, row) {
         this.setState({
-            formTitle:"查看详情",
-            issueDialogVisible:true,
+            issueFormTitle: "查看详情",
+            issueFormType: 3,
+            issueDialogVisible: true,
         });
 
     }
+
     /**
      * 编辑方法
      **/
 
-    editRow(index,row){
+    editRow(index, row) {
         this.setState({
-            formTitle:"编辑",
-            issueForm:row,
+            issueFormTitle: "编辑",
+            issueFormType: 1,
+            issueForm: row,
             issueDialogVisible: true,
         });
 
 
     }
+
     /**
      * 删除行
      * */
-    deleteRow(index,row){
+    deleteRow(index, row) {
         //向后端请求删除
         axios.get('/api/deleteIssue', {
             params: {
-               id:row.id
+                id: row.id
             }
         }).then((res) => {
             //删除成功后,页面上不显示
-            const { data } = this.state;
+            const {data} = this.state;
             data.splice(index, 1); //从数组中删除一个元素
             this.setState({
                 data: [...data]
@@ -225,6 +265,7 @@ export default class HomePage extends React.Component {
         });
 
     }
+
     render() {
         return (
 
@@ -249,7 +290,7 @@ export default class HomePage extends React.Component {
 
                 {/*新增issue对话框*/}
                 <Dialog
-                    title={this.state.formTitle}
+                    title={this.state.issueFormTitle}
                     visible={this.state.issueDialogVisible}
                     onCancel={() => this.setState({issueDialogVisible: false})}
                 >
@@ -260,31 +301,38 @@ export default class HomePage extends React.Component {
                                 <Input value={this.state.issueForm.title} onChange={this.onChange.bind(this, 'title')}/>
                             </Form.Item>
                             <Layout.Row>
-                                <Layout.Col span="12"><div className="grid-content bg-purple">
-                                    <Form.Item label="类别" labelWidth="120" prop="category" model={this.state.issueForm}
-                                               onSubmit={this.onSubmit.bind(this)}>
-                                        <Select value={this.state.issueForm.category} filterable={true} onChange={this.onChange.bind(this, 'category')}>
-                                            {
-                                                this.state.categoryOptions.map(el => {
-                                                    return <Select.Option key={el.name} label={el.name} value={el.name} />
-                                                })
-                                            }
-                                        </Select>
-                                    </Form.Item>
-                                </div></Layout.Col>
-                                <Layout.Col span="12"><div className="grid-content bg-purple-light">
-                                    <Form.Item label="创建人" labelWidth="120">
-                                        <Input value={this.state.issueForm.create_user}
-                                               onChange={this.onChange.bind(this, 'create_user')}/>
-                                    </Form.Item>
-                                </div></Layout.Col>
+                                <Layout.Col span="12">
+                                    <div className="grid-content bg-purple">
+                                        <Form.Item label="类别" labelWidth="120" prop="category"
+                                                   model={this.state.issueForm}
+                                                   onSubmit={this.onSubmit.bind(this)}>
+                                            <Select value={this.state.issueForm.category} filterable={true}
+                                                    onChange={this.onChange.bind(this, 'category')}>
+                                                {
+                                                    this.state.categoryOptions.map(el => {
+                                                        return <Select.Option key={el.name} label={el.name}
+                                                                              value={el.name}/>
+                                                    })
+                                                }
+                                            </Select>
+                                        </Form.Item>
+                                    </div>
+                                </Layout.Col>
+                                <Layout.Col span="12">
+                                    <div className="grid-content bg-purple-light">
+                                        <Form.Item label="创建人" labelWidth="120">
+                                            <Input value={this.state.issueForm.create_user}
+                                                   onChange={this.onChange.bind(this, 'create_user')}/>
+                                        </Form.Item>
+                                    </div>
+                                </Layout.Col>
                             </Layout.Row>
 
                             <Form.Item label="内容" labelWidth="120" prop="content" model={this.state.issueForm}
                                        onSubmit={this.onSubmit.bind(this)}>
                                 <Input
                                     type="textarea"
-                                    autosize={{ minRows: 6, maxRows: 10}}
+                                    autosize={{minRows: 6, maxRows: 10}}
                                     placeholder="请输入内容"
                                     value={this.state.issueForm.content}
                                     onChange={this.onChange.bind(this, 'content')}

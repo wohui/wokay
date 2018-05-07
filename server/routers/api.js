@@ -12,6 +12,7 @@ const routers = router
     .get('/deleteCategoryById',categoryInfoController.deleteCategoryById)
     .post('/addCategoryInfo',categoryInfoController.addCategoryInfo)
     .post('/addIssue',issueController.addIssue)
+    .post('/updateIssue',issueController.updateIssueById)
     .get('/getIssueInfo',issueController.getIssueInfo)
     .get('/deleteIssue',issueController.deleteIssue)
 module.exports = routers;

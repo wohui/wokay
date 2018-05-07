@@ -93,6 +93,42 @@ const deleteIssueById = async function(req_data){
         console.log("deleteIssueById出错了啊:"+err)
     }
 }
+/**
+ * 更新issue
+ * @param data
+ * @returns {Promise<any>}
+ */
+
+const doUpdateIssueById = function (data){
+    var p = new Promise(function(resolve, reject){
+        //做一些异步操作
+        pool.connect().then(client=>{
+            //获取当前时间
+            const modify_time = moment().format('YYYY-DD-MM HH:mm:ss');
+            // insert 数据
+            client.query("update  t_issues_info set title=$1,category=$2,content=$3,create_user=$4,modify_time=$5 where id=$6",[data.title,data.category,data.content,data.create_user,modify_time,data.id]).then(res=>{
+                var value = res
+                resolve(value)
+                return res
+            })
+        })
+    });
+    return p;
+}
+/**
+ *
+ * @param data
+ * @returns {Promise<void>}
+ */
+const updateIssueById = async function(data){
+    try {
+        data = await doUpdateIssueById(data); //设置字段
+        //如果返回 为何拿不到返回值
+        //return value
+    }catch (err) {
+        console.log("出错了啊:"+err)
+    }
+}
 
 /**
  *
@@ -131,6 +167,20 @@ module.exports = {
             data: data
         }
 
-    }
+    },
+    /**
+     * 更新数据
+     * @param ctx
+     * @returns {Promise<void>}
+     */
+    async updateIssueById( ctx ) {
+        let req_data=  ctx.request.body.data;
+        await updateIssueById(req_data);
 
+        ctx.body = {
+            success: true,
+            data: data
+        }
+
+    }
 }
