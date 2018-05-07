@@ -98,6 +98,7 @@ export default class HomePage extends React.Component {
             issueDialogVisible: false,
             issueFormTitle: "",
             issueFormType: 0, //提交类型,0-add 1-修改 2 -查看
+            formItemDisabled:false,//控制表单是否可编辑
             issueForm: {},//待提交表单数据
             categoryValue: [],
             categoryOptions: [],//类别下拉框选项数据
@@ -223,7 +224,9 @@ export default class HomePage extends React.Component {
     viewRow(index, row) {
         this.setState({
             issueFormTitle: "查看详情",
+            issueForm: row,
             issueFormType: 3,
+            formItemDisabled:true,
             issueDialogVisible: true,
         });
 
@@ -238,6 +241,7 @@ export default class HomePage extends React.Component {
             issueFormTitle: "编辑",
             issueFormType: 1,
             issueForm: row,
+            formItemDisabled:false,
             issueDialogVisible: true,
         });
 
@@ -298,7 +302,7 @@ export default class HomePage extends React.Component {
                         <Form ref="issueForm" model={this.state.issueForm} rules={this.state.rules}>
                             <Form.Item label="标题" labelWidth="120" prop="title" model={this.state.issueForm}
                                        onSubmit={this.onSubmit.bind(this)}>
-                                <Input value={this.state.issueForm.title} onChange={this.onChange.bind(this, 'title')}/>
+                                <Input value={this.state.issueForm.title} disabled={this.state.formItemDisabled} onChange={this.onChange.bind(this, 'title')}/>
                             </Form.Item>
                             <Layout.Row>
                                 <Layout.Col span="12">
@@ -306,7 +310,7 @@ export default class HomePage extends React.Component {
                                         <Form.Item label="类别" labelWidth="120" prop="category"
                                                    model={this.state.issueForm}
                                                    onSubmit={this.onSubmit.bind(this)}>
-                                            <Select value={this.state.issueForm.category} filterable={true}
+                                            <Select value={this.state.issueForm.category} disabled={this.state.formItemDisabled} filterable={true}
                                                     onChange={this.onChange.bind(this, 'category')}>
                                                 {
                                                     this.state.categoryOptions.map(el => {
@@ -322,18 +326,20 @@ export default class HomePage extends React.Component {
                                     <div className="grid-content bg-purple-light">
                                         <Form.Item label="创建人" labelWidth="120">
                                             <Input value={this.state.issueForm.create_user}
+                                                   disabled={this.state.formItemDisabled}
                                                    onChange={this.onChange.bind(this, 'create_user')}/>
                                         </Form.Item>
                                     </div>
                                 </Layout.Col>
                             </Layout.Row>
 
-                            <Form.Item label="内容" labelWidth="120" prop="content" model={this.state.issueForm}
+                            <Form.Item label="内容" labelWidth="120" prop="content"  model={this.state.issueForm}
                                        onSubmit={this.onSubmit.bind(this)}>
                                 <Input
                                     type="textarea"
                                     autosize={{minRows: 6, maxRows: 10}}
                                     placeholder="请输入内容"
+                                    disabled={this.state.formItemDisabled}
                                     value={this.state.issueForm.content}
                                     onChange={this.onChange.bind(this, 'content')}
                                 />
@@ -344,7 +350,7 @@ export default class HomePage extends React.Component {
 
                     <Dialog.Footer className="dialog-footer">
                         <Button onClick={this.onCancel.bind(this)}>取 消</Button>
-                        <Button type="primary" nativeType="submit" onClick={this.onSubmit.bind(this)}>确 定</Button>
+                        <Button type="primary" nativeType="submit" style={{display: this.state.formItemDisabled ? "none" : ""}} onClick={this.onSubmit.bind(this)}>确 定</Button>
                     </Dialog.Footer>
                 </Dialog>
 
