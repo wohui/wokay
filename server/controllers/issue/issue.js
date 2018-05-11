@@ -15,7 +15,7 @@ const doQueryIssueInfo = function (){
         //做一些异步操作
         pool.connect().then(client=>{
             // insert 数据
-            client.query("Select * FROM t_issues_info").then(res=>{
+            client.query("Select * FROM t_issue_info").then(res=>{
                 var value = res.rows
                 resolve(value)
                 return res
@@ -40,9 +40,9 @@ const doAddIssue = function (data){
         //做一些异步操作
         pool.connect().then(client=>{
             //获取当前时间
-            const currentTime = moment().format('YYYY-DD-MM HH:mm:ss');
+            const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
             // insert 数据
-            client.query("insert into t_issues_info (title,category,content,create_user,create_time) VALUES($1,$2,$3,$4,$5)",[data.title,data.category,data.content,data.create_user,currentTime]).then(res=>{
+            client.query("insert into t_issue_info (title,category,content,create_user,create_time) VALUES($1,$2,$3,$4,$5)",[data.title,data.category,data.content,data.create_user,currentTime]).then(res=>{
                 var value = res
                 resolve(value)
                 return res
@@ -70,7 +70,7 @@ const doDeleteIssueById = function (req_data){
         //做一些异步操作
         pool.connect().then(client=>{
             // insert 数据
-            client.query("delete  FROM t_issues_info where id = $1",[req_data.id]).then(res=>{
+            client.query("delete  FROM t_issue_info where id = $1",[req_data.id]).then(res=>{
                 var value = res.rows
                 resolve(value)
                 return res
@@ -104,9 +104,9 @@ const doUpdateIssueById = function (data){
         //做一些异步操作
         pool.connect().then(client=>{
             //获取当前时间
-            const modify_time = moment().format('YYYY-DD-MM HH:mm:ss');
+            const modify_time = moment().format('YYYY-MM-DD HH:mm:ss');
             // insert 数据
-            client.query("update  t_issues_info set title=$1,category=$2,content=$3,create_user=$4,modify_time=$5 where id=$6",[data.title,data.category,data.content,data.create_user,modify_time,data.id]).then(res=>{
+            client.query("update  t_issue_info set title=$1,category=$2,content=$3,create_user=$4,modify_time=$5 where id=$6",[data.title,data.category,data.content,data.create_user,modify_time,data.id]).then(res=>{
                 var value = res
                 resolve(value)
                 return res

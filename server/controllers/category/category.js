@@ -40,7 +40,7 @@ const doAddCategoryInfo = function (category_name,create_user){
         //做一些异步操作
         pool.connect().then(client=>{
             //获取当前时间
-            const currentTime = moment().format('YYYY-DD-MM HH:mm:ss');
+            const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
             // insert 数据
             client.query("insert into t_category_info (name,create_user,create_time) VALUES($1,$2,$3)",[category_name,create_user,currentTime]).then(res=>{
                 var value = res

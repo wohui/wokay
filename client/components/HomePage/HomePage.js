@@ -195,9 +195,12 @@ export default class HomePage extends React.Component {
     }
 
     addIssue() {
+        this.refs.issueForm.resetFields();
         this.setState({
             issueFormTitle: "新增",
             issueFormType: 0,
+            issueForm: {},
+            formItemDisabled:false,
             issueDialogVisible: true,
         });
     }
@@ -222,10 +225,11 @@ export default class HomePage extends React.Component {
      * 查看
      */
     viewRow(index, row) {
+        this.refs.issueForm.resetFields();
         this.setState({
             issueFormTitle: "查看详情",
             issueForm: row,
-            issueFormType: 3,
+            issueFormType: 2,
             formItemDisabled:true,
             issueDialogVisible: true,
         });
@@ -237,6 +241,7 @@ export default class HomePage extends React.Component {
      **/
 
     editRow(index, row) {
+        this.refs.issueForm.resetFields();
         this.setState({
             issueFormTitle: "编辑",
             issueFormType: 1,
