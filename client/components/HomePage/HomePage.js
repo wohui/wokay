@@ -278,10 +278,10 @@ export default class HomePage extends React.Component {
     render() {
         return (
 
-            <div>
+            <div className= "main" >
                 <Layout.Row>
-                    <Button onClick={() => this.addIssue()} type="primary" icon="edit"></Button>
-                    <Button onClick={() => this.queryIssueInfo()} type="primary" icon="search"></Button>
+                    <Button className= "icon-btn" onClick={() => this.addIssue()} type="primary" icon="edit"></Button>
+                    <Button className= "icon-btn" onClick={() => this.queryIssueInfo()} type="primary" icon="search"></Button>
                     <Layout.Col span="24">
                         <div className="grid-content bg-purple-light">
                             <Table
