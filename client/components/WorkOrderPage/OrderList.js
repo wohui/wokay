@@ -32,16 +32,96 @@ export default class OrderList extends React.Component {
                     }
                 },
                 {
-                    label: "类别",
-                    prop: "category",
+                    label: "发起人",
+                    prop: "start_by",
                     width: 100,
                     render: function (data) {
-                        return <Tag>{data.category}</Tag>
+                        return <Tag>{data.start_by}</Tag>
+                    }
+                },
+                {
+                    label: "归属系统",
+                    prop: "fcar_module",
+                    width: 100,
+                    render: function (data) {
+                        return <Tag>{data.fcar_module}</Tag>
+                    }
+                },
+                {
+                    label: "是否分配",
+                    prop: "is_assigned",
+                    width: 100,
+                    render: function (data) {
+                        return <Tag>{data.is_assigned}</Tag>
+                    }
+                },
+
+                {
+                    label: "分配时间",
+                    prop: "assigned_time",
+                    width: 100,
+                    render: function (data) {
+                        return <Tag>{data.assigned_time}</Tag>
+                    }
+                },
+
+                {
+                    label: "是否Bug",
+                    prop: "is_fcar_bug",
+                    width: 100,
+                    render: function (data) {
+                        return <Tag>{data.is_fcar_bug}</Tag>
+                    }
+                },
+                {
+                    label: "解决人",
+                    prop: "solve_name",
+                    width: 100,
+                    render: function (data) {
+                        return <Tag>{data.solve_name}</Tag>
+                    }
+                },
+                {
+                    label: "解决时间",
+                    prop: "solve_time",
+                    width: 200,
+                    render: function (data) {
+                        return (
+                            <span>
+            <Icon name="time"/>
+            <span style={{marginLeft: '10px'}}>{moment(data.solve_time).format('YYYY-MM-DD HH:mm:ss')}</span>
+
+          </span>)
+                    }
+                },
+
+                {
+                    label: "测试人员",
+                    prop: "tester",
+                    width: 100,
+                    render: function (data) {
+                        return <Tag>{data.tester}</Tag>
+                    }
+                },
+                {
+                    label: "解决结果",
+                    prop: "solve_result",
+                    width: 100,
+                    render: function (data) {
+                        return <Tag>{data.solve_result}</Tag>
+                    }
+                },
+                {
+                    label: "备注分析",
+                    prop: "note",
+                    width: 100,
+                    render: function (data) {
+                        return <Tag>{data.note}</Tag>
                     }
                 },
                 {
                     label: "创建人",
-                    //prop: "create_user",
+                    prop: "create_user",
                     width: 120,
                     render: function (data) {
                         return (
@@ -59,6 +139,22 @@ export default class OrderList extends React.Component {
                             <span>
             <Icon name="time"/>
             <span style={{marginLeft: '10px'}}>{moment(data.create_time).format('YYYY-MM-DD HH:mm:ss')}</span>
+
+          </span>)
+                    }
+                },
+
+
+                {
+                    label: "修改时间",
+                    prop: "modify_time",
+                    width: 200,
+                    render: function (data) {
+                        return (
+                            <span>
+            <Icon name="time"/>
+            <span style={{marginLeft: '10px'}}>{moment(data.modify_time).format('YYYY-MM-DD HH:mm:ss')}</span>
+
           </span>)
                     }
                 },
