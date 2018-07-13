@@ -293,7 +293,7 @@ export default class OrderList extends React.Component {
     addWorkOrder() {
         this.refs.workOrderForm.resetFields();
         this.setState({
-            workOrderFormTitle: "新增",
+            workOrderFormTitle: "新增工单",
             workOrderFormType: 0,
             workOrderForm: {},
             formItemDisabled:false,
