@@ -2,7 +2,7 @@
   "name": "wokay",
   "version": "0.0.1",
   "scripts": {
-    "build": "webpack --watch --verbose --color --display-error-details --config ./config/webpack.dev.js ",
+    "build": "webpack --mode production --config ./config/webpack.dev.js ",
     "start": "npm run build & node ./server/server.js",
     "test": "./node_modules/.bin/nodemon bin/www",
     "dev": "webpack-dev-server --devtool eval --progress --colors --profile --config ./config/webpack.dev.js & node ./server/server.js"
