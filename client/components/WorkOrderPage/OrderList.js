@@ -219,9 +219,23 @@ export default class OrderList extends React.Component {
                     value: '2',
                     label: '已解决',
                 },
-            ]
+            ],
 
-
+            //是否Bug
+            isFcarBugOptions: [
+                {
+                    value: '0',
+                    label: '是',
+                },
+                {
+                    value: '1',
+                    label: '否',
+                },
+                {
+                    value: '2',
+                    label: '未确定',
+                },
+            ],
         }
 
     }
@@ -424,6 +438,7 @@ export default class OrderList extends React.Component {
                     title={this.state.workOrderFormTitle}
                     visible={this.state.workOrderDialogVisible}
                     onCancel={() => this.setState({workOrderDialogVisible: false})}
+                    size="large"
                 >
                     <Dialog.Body>
                         <Form ref="workOrderForm" model={this.state.workOrderForm} rules={this.state.rules}>
@@ -442,21 +457,19 @@ export default class OrderList extends React.Component {
                                         </Form.Item>
                                     </div>
                                 </Layout.Col>
+
                                 <Layout.Col span="12">
                                     <div className="grid-content bg-purple">
-                                        <Form.Item label="归属系统" labelWidth="120" prop="fcar_module"
-                                                   model={this.state.workOrderForm}
+                                        <Form.Item label="测试人员" labelWidth="120" prop="tester" model={this.state.workOrderForm}
                                                    onSubmit={this.onSubmit.bind(this)}>
-                                            <Input value={this.state.workOrderForm.fcar_module}
-                                                   disabled={this.state.formItemDisabled}
-                                                   onChange={this.onChange.bind(this, 'fcar_module')}/>
+                                            <Input value={this.state.workOrderForm.tester} disabled={this.state.formItemDisabled}
+                                                   onChange={this.onChange.bind(this, 'tester')}/>
                                         </Form.Item>
                                     </div>
                                 </Layout.Col>
                             </Layout.Row>
-
                             <Layout.Row>
-                                <Layout.Col span="12">
+                                <Layout.Col span="7">
                                     <div className="grid-content bg-purple">
                                         <Form.Item label="是否分配" labelWidth="120" prop="is_assigned"
                                                    model={this.state.workOrderForm}
@@ -471,12 +484,22 @@ export default class OrderList extends React.Component {
                                                     })
                                                 }
                                             </Select>
-
-
                                         </Form.Item>
                                     </div>
                                 </Layout.Col>
-                                <Layout.Col span="12">
+                                <Layout.Col span="8">
+                                    <div className="grid-content bg-purple">
+                                        <Form.Item label="归属系统" labelWidth="120" prop="fcar_module"
+                                                   model={this.state.workOrderForm}
+                                                   onSubmit={this.onSubmit.bind(this)}>
+                                            <Input value={this.state.workOrderForm.fcar_module}
+                                                   disabled={this.state.formItemDisabled}
+                                                   onChange={this.onChange.bind(this, 'fcar_module')}/>
+                                        </Form.Item>
+                                    </div>
+                                </Layout.Col>
+
+                                <Layout.Col span="8">
                                     <div className="grid-content bg-purple">
                                         <Form.Item label="分配时间" labelWidth="120" prop="assigned_time"
                                                    model={this.state.workOrderForm}
@@ -488,8 +511,8 @@ export default class OrderList extends React.Component {
                                     </div>
                                 </Layout.Col>
                             </Layout.Row>
-                            <Layout.Row>
-                                <Layout.Col span="8">
+                            <Layout.Row gutter="10">
+                                <Layout.Col span="7">
                                     <div className="grid-content bg-purple">
                                         <Form.Item label="解决结果" labelWidth="120" prop="solved_result"
                                                    model={this.state.workOrderForm}
@@ -508,7 +531,7 @@ export default class OrderList extends React.Component {
                                         </Form.Item>
                                     </div>
                                 </Layout.Col>
-                                <Layout.Col span="8">
+                                <Layout.Col span="6">
                                     <div className="grid-content bg-purple-light">
                                         <Form.Item label="解决人" labelWidth="120" prop="solve_name"
                                                    model={this.state.workOrderForm}
@@ -519,7 +542,7 @@ export default class OrderList extends React.Component {
                                         </Form.Item>
                                     </div>
                                 </Layout.Col>
-                                <Layout.Col span="8">
+                                <Layout.Col span="6">
                                     <div className="grid-content bg-purple-light">
                                         <Form.Item label="解决时间" labelWidth="120" prop="solve_time"
                                                    model={this.state.workOrderForm}
@@ -530,14 +553,27 @@ export default class OrderList extends React.Component {
                                         </Form.Item>
                                     </div>
                                 </Layout.Col>
+                                <Layout.Col span="5">
+                                    <div className="grid-content bg-purple">
+                                        <Form.Item label="是否Bug" labelWidth="120" prop="is_fcar_bug"
+                                                   model={this.state.workOrderForm}
+                                                   onSubmit={this.onSubmit.bind(this)}>
+                                            <Select value={this.state.workOrderForm.is_fcar_bug}
+                                                    disabled={this.state.formItemDisabled}
+                                                    clearable={true}
+                                                    onChange={this.onChange.bind(this, 'is_fcar_bug')}>
+                                                {
+                                                    this.state.isFcarBugOptions.map((el) => {
+                                                        return <Select.Option key={el.value} label={el.label}
+                                                                              value={el.value}/>
+                                                    })
+                                                }
+                                            </Select>
+                                        </Form.Item>
+                                    </div>
+                                </Layout.Col>
+
                             </Layout.Row>
-
-
-                            <Form.Item label="测试人员" labelWidth="120" prop="tester" model={this.state.workOrderForm}
-                                       onSubmit={this.onSubmit.bind(this)}>
-                                <Input value={this.state.workOrderForm.tester} disabled={this.state.formItemDisabled}
-                                       onChange={this.onChange.bind(this, 'tester')}/>
-                            </Form.Item>
 
                             <Form.Item label="备注分析" labelWidth="120" prop="note" model={this.state.workOrderForm}
                                        onSubmit={this.onSubmit.bind(this)}>
