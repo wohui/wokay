@@ -1,15 +1,13 @@
 import React from 'react'
-import {Layout, Button, Table, Icon, Tag, Dialog, Form, Select, Input} from 'element-react'
+import {Button, Dialog, Form, Icon, Input, Layout, Select, Table, Tag} from 'element-react'
 
 import 'element-theme-default' //导入element-ui默认主题
-
 import './OrderList.css'
+import axios from "axios/index";
 
 require('es6-promise').polyfill();
 require('isomorphic-fetch');
 const moment = require('moment');
-import banner from '../../../static/imgs/banner.jpg'
-import axios from "axios/index";
 
 export default class OrderList extends React.Component {
 
@@ -105,10 +103,10 @@ export default class OrderList extends React.Component {
                 },
                 {
                     label: "解决结果",
-                    prop: "solve_result",
+                    prop: "solved_result",
                     width: 100,
                     render: function (data) {
-                        return <Tag>{data.solve_result}</Tag>
+                        return <Tag>{data.solved_result}</Tag>
                     }
                 },
                 {
@@ -183,21 +181,47 @@ export default class OrderList extends React.Component {
                 title: [
                     {required: true, message: '请输入标题', trigger: 'blur'}
                 ],
-                category: [
-                    {required: true, message: '请选择类别', trigger: 'change'}
+                solved_result: [
+                    {required: true, message: '请选择解决结果', trigger: 'change'}
                 ],
-                content: [
-                    {required: true, message: '请输入内容', trigger: 'change'}
+                tester: [
+                    {required: true, message: '请填写测试人员', trigger: 'change'}
                 ],
             },
             data: [], //
             workOrderDialogVisible: false,
             workOrderFormTitle: "",
             workOrderFormType: 0, //提交类型,0-add 1-修改 2 -查看
-            formItemDisabled:false,//控制表单是否可编辑
+            formItemDisabled: false,//控制表单是否可编辑
             workOrderForm: {},//待提交表单数据
             categoryValue: [],
-            categoryOptions: [],//类别下拉框选项数据
+            //是否分配选项
+            isAssignedOptions: [{
+                value: 0,
+                label: '未分配'
+            }, {
+                value: 1,
+                label: '已分配'
+            }
+            ],
+
+            //解决状态
+            solvedResultOptions: [
+                {
+                    value: '0',
+                    label: '未解决',
+                },
+                {
+                    value: '1',
+                    label: '正在解决',
+                },
+                {
+                    value: '2',
+                    label: '已解决',
+                },
+            ]
+
+
         }
 
     }
@@ -209,19 +233,19 @@ export default class OrderList extends React.Component {
     componentDidMount() {
         //向后端请求类型名称数据
 
-        axios.get('/api/getAllCategoryName', {
-            params: {
-                //ID: 12345
-            }
-        }).then((res) => {
-            this.setState({
-                categoryOptions: res.data.data
-            }, () => {
-                console.log(res.data.data);
-            });
-        }).catch((error) => {
-            console.log("error:" + error)
-        });
+        // axios.get('/api/getAllCategoryName', {
+        //     params: {
+        //         //ID: 12345
+        //     }
+        // }).then((res) => {
+        //     this.setState({
+        //         categoryOptions: res.data.data
+        //     }, () => {
+        //         console.log(res.data.data);
+        //     });
+        // }).catch((error) => {
+        //     console.log("error:" + error)
+        // });
     }
 
     /**
@@ -277,7 +301,7 @@ export default class OrderList extends React.Component {
     }
 
     onCancel(e) {
-        console.log("onCancelData" + this.state.data.toString());
+        //console.log("onCancelData" + this.state.data.toString());
         this.queryWorkOrderInfo();
         this.setState({
             workOrderDialogVisible: false,
@@ -296,7 +320,7 @@ export default class OrderList extends React.Component {
             workOrderFormTitle: "新增工单",
             workOrderFormType: 0,
             workOrderForm: {},
-            formItemDisabled:false,
+            formItemDisabled: false,
             workOrderDialogVisible: true,
         });
     }
@@ -326,7 +350,7 @@ export default class OrderList extends React.Component {
             workOrderFormTitle: "查看详情",
             workOrderForm: row,
             workOrderFormType: 2,
-            formItemDisabled:true,
+            formItemDisabled: true,
             workOrderDialogVisible: true,
         });
 
@@ -342,7 +366,7 @@ export default class OrderList extends React.Component {
             workOrderFormTitle: "编辑",
             workOrderFormType: 1,
             workOrderForm: row,
-            formItemDisabled:false,
+            formItemDisabled: false,
             workOrderDialogVisible: true,
         });
 
@@ -374,10 +398,12 @@ export default class OrderList extends React.Component {
     render() {
         return (
 
-            <div className= "main" >
+            <div className="main">
                 <Layout.Row>
-                    <Button className= "icon-btn" onClick={() => this.addWorkOrder()} type="primary" icon="edit"></Button>
-                    <Button className= "icon-btn" onClick={() => this.queryWorkOrderInfo()} type="primary" icon="search"></Button>
+                    <Button className="icon-btn" onClick={() => this.addWorkOrder()} type="primary"
+                            icon="edit"></Button>
+                    <Button className="icon-btn" onClick={() => this.queryWorkOrderInfo()} type="primary"
+                            icon="search"></Button>
                     <Layout.Col span="24">
                         <div className="grid-content bg-purple-light">
                             <Table
@@ -403,46 +429,125 @@ export default class OrderList extends React.Component {
                         <Form ref="workOrderForm" model={this.state.workOrderForm} rules={this.state.rules}>
                             <Form.Item label="标题" labelWidth="120" prop="title" model={this.state.workOrderForm}
                                        onSubmit={this.onSubmit.bind(this)}>
-                                <Input value={this.state.workOrderForm.title} disabled={this.state.formItemDisabled} onChange={this.onChange.bind(this, 'title')}/>
+                                <Input value={this.state.workOrderForm.title} disabled={this.state.formItemDisabled}
+                                       onChange={this.onChange.bind(this, 'title')}/>
                             </Form.Item>
                             <Layout.Row>
                                 <Layout.Col span="12">
                                     <div className="grid-content bg-purple">
-                                        <Form.Item label="类别" labelWidth="120" prop="category"
+                                        <Form.Item label="发起人" labelWidth="120">
+                                            <Input value={this.state.workOrderForm.start_by}
+                                                   disabled={this.state.formItemDisabled}
+                                                   onChange={this.onChange.bind(this, 'start_by')}/>
+                                        </Form.Item>
+                                    </div>
+                                </Layout.Col>
+                                <Layout.Col span="12">
+                                    <div className="grid-content bg-purple">
+                                        <Form.Item label="归属系统" labelWidth="120" prop="fcar_module"
                                                    model={this.state.workOrderForm}
                                                    onSubmit={this.onSubmit.bind(this)}>
-                                            <Select value={this.state.workOrderForm.category} disabled={this.state.formItemDisabled} filterable={true}
-                                                    onChange={this.onChange.bind(this, 'category')}>
+                                            <Input value={this.state.workOrderForm.fcar_module}
+                                                   disabled={this.state.formItemDisabled}
+                                                   onChange={this.onChange.bind(this, 'fcar_module')}/>
+                                        </Form.Item>
+                                    </div>
+                                </Layout.Col>
+                            </Layout.Row>
+
+                            <Layout.Row>
+                                <Layout.Col span="12">
+                                    <div className="grid-content bg-purple">
+                                        <Form.Item label="是否分配" labelWidth="120" prop="is_assigned"
+                                                   model={this.state.workOrderForm}
+                                                   onSubmit={this.onSubmit.bind(this)}>
+                                            <Select value={this.state.workOrderForm.is_assigned}
+                                                    disabled={this.state.formItemDisabled}
+                                                    onChange={this.onChange.bind(this, 'is_assigned')}>
                                                 {
-                                                    this.state.categoryOptions.map(el => {
-                                                        return <Select.Option key={el.name} label={el.name}
-                                                                              value={el.name}/>
+                                                    this.state.isAssignedOptions.map(el => {
+                                                        return <Select.Option key={el.value} label={el.label}
+                                                                              value={el.value}/>
+                                                    })
+                                                }
+                                            </Select>
+
+
+                                        </Form.Item>
+                                    </div>
+                                </Layout.Col>
+                                <Layout.Col span="12">
+                                    <div className="grid-content bg-purple">
+                                        <Form.Item label="分配时间" labelWidth="120" prop="assigned_time"
+                                                   model={this.state.workOrderForm}
+                                                   onSubmit={this.onSubmit.bind(this)}>
+                                            <Input value={this.state.workOrderForm.assigned_time}
+                                                   disabled={this.state.formItemDisabled}
+                                                   onChange={this.onChange.bind(this, 'assigned_time')}/>
+                                        </Form.Item>
+                                    </div>
+                                </Layout.Col>
+                            </Layout.Row>
+                            <Layout.Row>
+                                <Layout.Col span="8">
+                                    <div className="grid-content bg-purple">
+                                        <Form.Item label="解决结果" labelWidth="120" prop="solved_result"
+                                                   model={this.state.workOrderForm}
+                                                   onSubmit={this.onSubmit.bind(this)}>
+                                            <Select value={this.state.workOrderForm.solved_result}
+                                                    disabled={this.state.formItemDisabled}
+                                                    clearable={true}
+                                                    onChange={this.onChange.bind(this, 'solved_result')}>
+                                                {
+                                                    this.state.solvedResultOptions.map((el) => {
+                                                        return <Select.Option key={el.value} label={el.label}
+                                                                              value={el.value}/>
                                                     })
                                                 }
                                             </Select>
                                         </Form.Item>
                                     </div>
                                 </Layout.Col>
-                                <Layout.Col span="12">
+                                <Layout.Col span="8">
                                     <div className="grid-content bg-purple-light">
-                                        <Form.Item label="创建人" labelWidth="120">
-                                            <Input value={this.state.workOrderForm.create_user}
+                                        <Form.Item label="解决人" labelWidth="120" prop="solve_name"
+                                                   model={this.state.workOrderForm}
+                                                   onSubmit={this.onSubmit.bind(this)}>
+                                            <Input value={this.state.workOrderForm.solve_name}
                                                    disabled={this.state.formItemDisabled}
-                                                   onChange={this.onChange.bind(this, 'create_user')}/>
+                                                   onChange={this.onChange.bind(this, 'solve_name')}/>
+                                        </Form.Item>
+                                    </div>
+                                </Layout.Col>
+                                <Layout.Col span="8">
+                                    <div className="grid-content bg-purple-light">
+                                        <Form.Item label="解决时间" labelWidth="120" prop="solve_time"
+                                                   model={this.state.workOrderForm}
+                                                   onSubmit={this.onSubmit.bind(this)}>
+                                            <Input value={this.state.workOrderForm.solve_time}
+                                                   disabled={this.state.formItemDisabled}
+                                                   onChange={this.onChange.bind(this, 'solve_time')}/>
                                         </Form.Item>
                                     </div>
                                 </Layout.Col>
                             </Layout.Row>
 
-                            <Form.Item label="内容" labelWidth="120" prop="content"  model={this.state.workOrderForm}
+
+                            <Form.Item label="测试人员" labelWidth="120" prop="tester" model={this.state.workOrderForm}
+                                       onSubmit={this.onSubmit.bind(this)}>
+                                <Input value={this.state.workOrderForm.tester} disabled={this.state.formItemDisabled}
+                                       onChange={this.onChange.bind(this, 'tester')}/>
+                            </Form.Item>
+
+                            <Form.Item label="备注分析" labelWidth="120" prop="note" model={this.state.workOrderForm}
                                        onSubmit={this.onSubmit.bind(this)}>
                                 <Input
                                     type="textarea"
                                     autosize={{minRows: 6, maxRows: 10}}
-                                    placeholder="请输入内容"
+                                    placeholder="请输入备注"
                                     disabled={this.state.formItemDisabled}
-                                    value={this.state.workOrderForm.content}
-                                    onChange={this.onChange.bind(this, 'content')}
+                                    value={this.state.workOrderForm.note}
+                                    onChange={this.onChange.bind(this, 'note')}
                                 />
                             </Form.Item>
 
@@ -451,7 +556,9 @@ export default class OrderList extends React.Component {
 
                     <Dialog.Footer className="dialog-footer">
                         <Button onClick={this.onCancel.bind(this)}>取 消</Button>
-                        <Button type="primary" nativeType="submit" style={{display: this.state.formItemDisabled ? "none" : ""}} onClick={this.onSubmit.bind(this)}>确 定</Button>
+                        <Button type="primary" nativeType="submit"
+                                style={{display: this.state.formItemDisabled ? "none" : ""}}
+                                onClick={this.onSubmit.bind(this)}>确 定</Button>
                     </Dialog.Footer>
                 </Dialog>
 
