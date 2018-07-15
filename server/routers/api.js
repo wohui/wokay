@@ -11,5 +11,6 @@ const routers = router
     .get('/getAllCategoryName',categoryInfoController.getAllCategoryName)
     .get('/deleteCategoryById',categoryInfoController.deleteCategoryById)
     .post('/addCategoryInfo',categoryInfoController.addCategoryInfo)
+    .get('/queryAllWorkOrder',workOrderController.queryAllWorkOrder)
     .post('/addWorkOrder',workOrderController.addWorkOrder)
 module.exports = routers;

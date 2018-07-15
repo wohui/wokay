@@ -188,7 +188,7 @@ export default class OrderList extends React.Component {
                     {required: true, message: '请填写测试人员', trigger: 'change'}
                 ],
             },
-            data: [], //
+            data: [], //工单列表
             workOrderDialogVisible: false,
             workOrderFormTitle: "",
             workOrderFormType: 0, //提交类型,0-add 1-修改 2 -查看
@@ -340,9 +340,9 @@ export default class OrderList extends React.Component {
     }
 
     //查询数据,列表显示用
-    queryWorkOrderInfo() {
+    queryWorkOrder() {
         //向后端请求数据
-        axios.get('/api/getWorkOrderInfo', {
+        axios.get('/api/queryAllWorkOrder', {
             params: {
                 //ID: 12345
             }
@@ -416,7 +416,7 @@ export default class OrderList extends React.Component {
                 <Layout.Row>
                     <Button className="icon-btn" onClick={() => this.addWorkOrder()} type="primary"
                             icon="edit"></Button>
-                    <Button className="icon-btn" onClick={() => this.queryWorkOrderInfo()} type="primary"
+                    <Button className="icon-btn" onClick={() => this.queryWorkOrder()} type="primary"
                             icon="search"></Button>
                     <Layout.Col span="24">
                         <div className="grid-content bg-purple-light">
@@ -438,7 +438,8 @@ export default class OrderList extends React.Component {
                     title={this.state.workOrderFormTitle}
                     visible={this.state.workOrderDialogVisible}
                     onCancel={() => this.setState({workOrderDialogVisible: false})}
-                    size="large"
+                    size="large
+                    "
                 >
                     <Dialog.Body>
                         <Form ref="workOrderForm" model={this.state.workOrderForm} rules={this.state.rules}>

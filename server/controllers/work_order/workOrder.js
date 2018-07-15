@@ -10,7 +10,7 @@ var data= {};
  * 异步请求函数,查询数据库
  * @returns {Promise<any>}
  */
-const doQueryWorkOrderInfo = function (){
+const doQueryAllWorkOrder = function (){
     var p = new Promise(function(resolve, reject){
         //做一些异步操作
         pool.connect().then(client=>{
@@ -25,9 +25,9 @@ const doQueryWorkOrderInfo = function (){
     return p;
 }
 
-const getAllWorkOrderInfo = async function(){
+const getAllWorkOrder = async function(){
     try {
-        data = await doQueryWorkOrderInfo(); //设置字段值
+        data = await doQueryAllWorkOrder(); //设置字段值
         //如果返回 为何拿不到返回值
         //return value
     }catch (err) {
@@ -133,11 +133,11 @@ const updateWorkOrderById = async function(data){
 
 /**
  *
- * @type {{queryAllWorkOrderInfo: (function(*): Promise), addWorkOrder: (function(*): Promise), deleteWorkOrder: (function(*): Promise.<void>), updateWorkOrderById: (function(*): Promise.<void>)}}
+ * @type {{queryAllWorkOrder: (function(*): Promise), addWorkOrder: (function(*): Promise), deleteWorkOrder: (function(*): Promise.<void>), updateWorkOrderById: (function(*): Promise.<void>)}}
  */
 module.exports = {
-    async queryAllWorkOrderInfo( ctx ) {
-        await getAllWorkOrderInfo();
+    async queryAllWorkOrder( ctx ) {
+        await getAllWorkOrder();
         ctx.body = {
             success: true,
             data: data
