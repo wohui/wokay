@@ -50,7 +50,12 @@ export default class OrderList extends React.Component {
                     prop: "is_assigned",
                     width: 100,
                     render: function (data) {
-                        return <Tag>{data.is_assigned}</Tag>
+                        if (0 === data.is_assigned) {
+                            return <Tag>未分配</Tag>
+                        } else {
+                            return <Tag>已分配</Tag>
+                        }
+
                     }
                 },
 
@@ -68,7 +73,13 @@ export default class OrderList extends React.Component {
                     prop: "is_fcar_bug",
                     width: 100,
                     render: function (data) {
-                        return <Tag>{data.is_fcar_bug}</Tag>
+                        if (0 === data.is_fcar_bug) {
+                            return <Tag>是</Tag>
+                        } else if (1 == data.is_fcar_bug) {
+                            return <Tag>否</Tag>
+                        } else {
+                            return <Tag>未确定</Tag>
+                        }
                     }
                 },
                 {
@@ -106,7 +117,13 @@ export default class OrderList extends React.Component {
                     prop: "solved_result",
                     width: 100,
                     render: function (data) {
-                        return <Tag>{data.solved_result}</Tag>
+                        if (0 === data.solved_result) {
+                            return <Tag>未解决</Tag>
+                        } else if (1 == data.solved_result) {
+                            return <Tag>正在解决</Tag>
+                        } else {
+                            return <Tag>已解决</Tag>
+                        }
                     }
                 },
                 {
@@ -461,9 +478,11 @@ export default class OrderList extends React.Component {
 
                                 <Layout.Col span="12">
                                     <div className="grid-content bg-purple">
-                                        <Form.Item label="测试人员" labelWidth="120" prop="tester" model={this.state.workOrderForm}
+                                        <Form.Item label="测试人员" labelWidth="120" prop="tester"
+                                                   model={this.state.workOrderForm}
                                                    onSubmit={this.onSubmit.bind(this)}>
-                                            <Input value={this.state.workOrderForm.tester} disabled={this.state.formItemDisabled}
+                                            <Input value={this.state.workOrderForm.tester}
+                                                   disabled={this.state.formItemDisabled}
                                                    onChange={this.onChange.bind(this, 'tester')}/>
                                         </Form.Item>
                                     </div>
