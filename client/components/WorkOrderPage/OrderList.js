@@ -182,7 +182,7 @@ export default class OrderList extends React.Component {
                     {required: true, message: '请输入标题', trigger: 'blur'}
                 ],
                 solved_result: [
-                    {required: true, message: '请选择解决结果', trigger: 'change'}
+                    {required: true,message: '请选择解决结果', trigger: 'change'}
                 ],
                 tester: [
                     {required: true, message: '请填写测试人员', trigger: 'change'}
@@ -208,15 +208,15 @@ export default class OrderList extends React.Component {
             //解决状态
             solvedResultOptions: [
                 {
-                    value: '0',
+                    value: 0,
                     label: '未解决',
                 },
                 {
-                    value: '1',
+                    value: 1,
                     label: '正在解决',
                 },
                 {
-                    value: '2',
+                    value:2,
                     label: '已解决',
                 },
             ],
@@ -224,15 +224,15 @@ export default class OrderList extends React.Component {
             //是否Bug
             isFcarBugOptions: [
                 {
-                    value: '0',
+                    value: 0,
                     label: '是',
                 },
                 {
-                    value: '1',
+                    value: 1,
                     label: '否',
                 },
                 {
-                    value: '2',
+                    value: 2,
                     label: '未确定',
                 },
             ],
@@ -316,7 +316,7 @@ export default class OrderList extends React.Component {
 
     onCancel(e) {
         //console.log("onCancelData" + this.state.data.toString());
-        this.queryWorkOrderInfo();
+        this.queryWorkOrder();
         this.setState({
             workOrderDialogVisible: false,
 
@@ -512,7 +512,7 @@ export default class OrderList extends React.Component {
                                     </div>
                                 </Layout.Col>
                             </Layout.Row>
-                            <Layout.Row gutter="10">
+                            <Layout.Row>
                                 <Layout.Col span="7">
                                     <div className="grid-content bg-purple">
                                         <Form.Item label="解决结果" labelWidth="120" prop="solved_result"
@@ -520,7 +520,7 @@ export default class OrderList extends React.Component {
                                                    onSubmit={this.onSubmit.bind(this)}>
                                             <Select value={this.state.workOrderForm.solved_result}
                                                     disabled={this.state.formItemDisabled}
-                                                    clearable={true}
+
                                                     onChange={this.onChange.bind(this, 'solved_result')}>
                                                 {
                                                     this.state.solvedResultOptions.map((el) => {
