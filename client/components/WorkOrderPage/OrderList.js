@@ -69,25 +69,25 @@ export default class OrderList extends React.Component {
                 },
 
                 {
-                    label: "是否Bug",
-                    prop: "is_fcar_bug",
-                    width: 100,
-                    render: function (data) {
-                        if (0 === data.is_fcar_bug) {
-                            return <Tag>是</Tag>
-                        } else if (1 == data.is_fcar_bug) {
-                            return <Tag>否</Tag>
-                        } else {
-                            return <Tag>未确定</Tag>
-                        }
-                    }
-                },
-                {
                     label: "解决人",
                     prop: "solve_name",
                     width: 100,
                     render: function (data) {
                         return <Tag>{data.solve_name}</Tag>
+                    }
+                },
+                {
+                    label: "解决结果",
+                    prop: "solved_result",
+                    width: 100,
+                    render: function (data) {
+                        if (0 === data.solved_result) {
+                            return <Tag>未解决</Tag>
+                        } else if (1 == data.solved_result) {
+                            return <Tag>正在解决</Tag>
+                        } else {
+                            return <Tag>已解决</Tag>
+                        }
                     }
                 },
                 {
@@ -103,27 +103,26 @@ export default class OrderList extends React.Component {
           </span>)
                     }
                 },
-
+                {
+                    label: "是否Bug",
+                    prop: "is_fcar_bug",
+                    width: 100,
+                    render: function (data) {
+                        if (0 === data.is_fcar_bug) {
+                            return <Tag>是</Tag>
+                        } else if (1 == data.is_fcar_bug) {
+                            return <Tag>否</Tag>
+                        } else {
+                            return <Tag>未确定</Tag>
+                        }
+                    }
+                },
                 {
                     label: "测试人员",
                     prop: "tester",
                     width: 100,
                     render: function (data) {
                         return <Tag>{data.tester}</Tag>
-                    }
-                },
-                {
-                    label: "解决结果",
-                    prop: "solved_result",
-                    width: 100,
-                    render: function (data) {
-                        if (0 === data.solved_result) {
-                            return <Tag>未解决</Tag>
-                        } else if (1 == data.solved_result) {
-                            return <Tag>正在解决</Tag>
-                        } else {
-                            return <Tag>已解决</Tag>
-                        }
                     }
                 },
                 {
@@ -198,11 +197,18 @@ export default class OrderList extends React.Component {
                 title: [
                     {required: true, message: '请输入标题', trigger: 'blur'}
                 ],
-                solved_result: [
-                    {required: true,message: '请选择解决结果', trigger: 'change'}
+                start_by: [
+                    {required: true, message: '请填写发起人', trigger: 'blur'}
                 ],
+                is_assigned: [
+                    {required: true, type: 'integer', message: '请选择是否分配', trigger: 'change'} //type 是默认string ，需要修改适应对应类型
+                ],
+                solved_result: [
+                    {required: true, type: 'integer', message: '请选择解决结果', trigger: 'change'}
+                ],
+
                 tester: [
-                    {required: true, message: '请填写测试人员', trigger: 'change'}
+                    {required: true, message: '请填写测试人员', trigger: 'blur'}
                 ],
             },
             data: [], //工单列表
@@ -233,7 +239,7 @@ export default class OrderList extends React.Component {
                     label: '正在解决',
                 },
                 {
-                    value:2,
+                    value: 2,
                     label: '已解决',
                 },
             ],
@@ -468,7 +474,11 @@ export default class OrderList extends React.Component {
                             <Layout.Row>
                                 <Layout.Col span="12">
                                     <div className="grid-content bg-purple">
-                                        <Form.Item label="发起人" labelWidth="120">
+                                        <Form.Item label="发起人" labelWidth="120"
+                                                   prop="start_by"
+
+                                                   onSubmit={this.onSubmit.bind(this)}
+                                        >
                                             <Input value={this.state.workOrderForm.start_by}
                                                    disabled={this.state.formItemDisabled}
                                                    onChange={this.onChange.bind(this, 'start_by')}/>
@@ -507,17 +517,6 @@ export default class OrderList extends React.Component {
                                         </Form.Item>
                                     </div>
                                 </Layout.Col>
-                                <Layout.Col span="8">
-                                    <div className="grid-content bg-purple">
-                                        <Form.Item label="归属系统" labelWidth="120" prop="fcar_module"
-                                                   model={this.state.workOrderForm}
-                                                   onSubmit={this.onSubmit.bind(this)}>
-                                            <Input value={this.state.workOrderForm.fcar_module}
-                                                   disabled={this.state.formItemDisabled}
-                                                   onChange={this.onChange.bind(this, 'fcar_module')}/>
-                                        </Form.Item>
-                                    </div>
-                                </Layout.Col>
 
                                 <Layout.Col span="8">
                                     <div className="grid-content bg-purple">
@@ -527,6 +526,17 @@ export default class OrderList extends React.Component {
                                             <Input value={this.state.workOrderForm.assigned_time}
                                                    disabled={this.state.formItemDisabled}
                                                    onChange={this.onChange.bind(this, 'assigned_time')}/>
+                                        </Form.Item>
+                                    </div>
+                                </Layout.Col>
+                                <Layout.Col span="8">
+                                    <div className="grid-content bg-purple">
+                                        <Form.Item label="归属系统" labelWidth="120" prop="fcar_module"
+                                                   model={this.state.workOrderForm}
+                                                   onSubmit={this.onSubmit.bind(this)}>
+                                            <Input value={this.state.workOrderForm.fcar_module}
+                                                   disabled={this.state.formItemDisabled}
+                                                   onChange={this.onChange.bind(this, 'fcar_module')}/>
                                         </Form.Item>
                                     </div>
                                 </Layout.Col>
