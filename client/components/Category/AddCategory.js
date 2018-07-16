@@ -163,8 +163,8 @@ class AddCategory extends React.Component {
     render() {
         return (
             <div>
-                <Button type="primary" onClick={() => this.add()}>新建</Button>
-                <Button type="primary" onClick={() => this.query()}>查询</Button>
+                <Button className="action-btn" type="primary" onClick={() => this.add()}>新建</Button>
+                <Button className="action-btn" type="primary" onClick={() => this.query()}>查询</Button>
                 <Table
                     style={{width: '100%'}}
                     columns={this.state.columns}
