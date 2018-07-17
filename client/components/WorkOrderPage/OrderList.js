@@ -49,6 +49,10 @@ export default class OrderList extends React.Component {
                     label: "是否分配",
                     prop: "is_assigned",
                     width: 100,
+                    filters: [{text: '未分配', value: 0}, {text: '已分配', value: 1}],
+                    filterMethod(value, row) {
+                        return row.is_assigned === value;
+                    },
                     render: function (data) {
                         if (0 === data.is_assigned) {
                             return <Tag>未分配</Tag>
@@ -80,6 +84,10 @@ export default class OrderList extends React.Component {
                     label: "解决结果",
                     prop: "solved_result",
                     width: 100,
+                    filters: [{text: '未解决', value: 0}, , {text: '正在解决', value: 1}, {text: '已解决', value: 2}],
+                    filterMethod(value, row) {
+                        return row.solved_result === value;
+                    },
                     render: function (data) {
                         if (0 === data.solved_result) {
                             return <Tag>未解决</Tag>
@@ -217,6 +225,7 @@ export default class OrderList extends React.Component {
             workOrderFormType: 0, //提交类型,0-add 1-修改 2 -查看
             formItemDisabled: false,//控制表单是否可编辑
             workOrderForm: {},//待提交表单数据
+            queryWorkOrderForm: {},//查询表单数据
             categoryValue: [],
             //是否分配选项
             isAssignedOptions: [{
@@ -336,6 +345,25 @@ export default class OrderList extends React.Component {
         }
 
     }
+    //根据查询条件查询数据
+    onQuerySubmit() {
+        //向后端请求数据
+        axios.post('/api/queryWorkOrder', {
+            data: this.state.queryWorkOrderForm
+        }).then((res) => {
+            this.setState({
+                data: res.data.data
+            });
+            console.log("res:" + res)
+        }).catch((err) => {
+            console.log("onQuerySubmit请求错误:" + err)
+        })
+    }
+
+    onQueryChange(key, value) {
+        this.state.queryWorkOrderForm[key] = value;
+        this.forceUpdate();
+    }
 
     onCancel(e) {
         //console.log("onCancelData" + this.state.data.toString());
@@ -362,7 +390,7 @@ export default class OrderList extends React.Component {
         });
     }
 
-    //查询数据,列表显示用
+    //查询全部数据
     queryWorkOrder() {
         //向后端请求数据
         axios.get('/api/queryAllWorkOrder', {
@@ -436,11 +464,74 @@ export default class OrderList extends React.Component {
         return (
 
             <div className="main">
+                <Form ref="queryWorkOrderForm" model={this.state.queryWorkOrderForm} className="query-form">
+                    <Layout.Row>
+                        <Layout.Col span="5">
+                            <div className="grid-content bg-purple">
+                                <Form.Item label="标题" labelWidth="120" prop="title"
+                                           model={this.state.queryWorkOrderForm}
+                                           onSubmit={this.onQuerySubmit.bind(this)}>
+                                    <Input value={this.state.queryWorkOrderForm.title}
+                                           onChange={this.onQueryChange.bind(this, 'title')}/>
+                                </Form.Item>
+                            </div>
+                        </Layout.Col>
+                        <Layout.Col span="4">
+                            <div className="grid-content bg-purple">
+                                <Form.Item label="发起人" labelWidth="120"
+                                           prop="start_by"
+                                           onSubmit={this.onQuerySubmit.bind(this)}
+                                >
+                                    <Input value={this.state.queryWorkOrderForm.start_by}
+                                           onChange={this.onQueryChange.bind(this, 'start_by')}/>
+                                </Form.Item>
+                            </div>
+                        </Layout.Col>
+                        <Layout.Col span="4">
+                            <div className="grid-content bg-purple">
+                                <Form.Item label="解决人" labelWidth="120"
+                                           prop="solve_name"
+                                           onSubmit={this.onQuerySubmit.bind(this)}
+                                >
+                                    <Input value={this.state.queryWorkOrderForm.solve_name} placeholder="请输入解决人"
+                                           onChange={this.onQueryChange.bind(this, 'solve_name')}/>
+                                </Form.Item>
+                            </div>
+                        </Layout.Col>
+                        <Layout.Col span="4">
+
+                            <div className="grid-content bg-purple">
+                                <Form.Item label="测试人员" labelWidth="120" prop="tester"
+                                           model={this.state.queryWorkOrderForm}
+                                           onSubmit={this.onQuerySubmit.bind(this)}>
+                                    <Input value={this.state.queryWorkOrderForm.tester}
+                                           onChange={this.onQueryChange.bind(this, 'tester')}/>
+                                </Form.Item>
+                            </div>
+                        </Layout.Col>
+                    </Layout.Row>
+                    <Layout.Row type="flex" justify="center">
+                        <Layout.Col span="1">
+                            <div className="grid-content bg-purple-light">
+                                <Button type="primary"
+                                        onClick={this.onQuerySubmit.bind(this)}>查询</Button>
+                            </div>
+                        </Layout.Col>
+
+                    </Layout.Row>
+                </Form>
+
                 <Layout.Row>
-                    <Button className="icon-btn" onClick={() => this.addWorkOrder()} type="primary"
-                            icon="edit"></Button>
-                    <Button className="icon-btn" onClick={() => this.queryWorkOrder()} type="primary"
-                            icon="search"></Button>
+                    <Layout.Col span="4">
+                        <div className="grid-content bg-purple-light">
+                            <Button className="icon-btn" onClick={() => this.addWorkOrder()} type="primary"
+                                    icon="edit"/>
+                            <Button className="icon-btn" onClick={() => this.queryWorkOrder()} type="primary"
+                                    icon="search"/>
+                        </div>
+                    </Layout.Col>
+
+
                     <Layout.Col span="24">
                         <div className="grid-content bg-purple-light">
                             <Table
@@ -461,9 +552,7 @@ export default class OrderList extends React.Component {
                     title={this.state.workOrderFormTitle}
                     visible={this.state.workOrderDialogVisible}
                     onCancel={() => this.setState({workOrderDialogVisible: false})}
-                    size="large
-                    "
-                >
+                    size="large">
                     <Dialog.Body>
                         <Form ref="workOrderForm" model={this.state.workOrderForm} rules={this.state.rules}>
                             <Form.Item label="标题" labelWidth="120" prop="title" model={this.state.workOrderForm}

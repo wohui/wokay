@@ -3,7 +3,6 @@
  */
 
 const router = require('koa-router')()
-const userInfoController = require('../controllers/api');
 const categoryInfoController = require('../controllers/category/category')
 const issueController = require('../controllers/issue/issue')
 const workOrderController = require('../controllers/work_order/workOrder')
@@ -17,5 +16,6 @@ const routers = router
     .get('/getIssueInfo',issueController.getIssueInfo)
     .get('/deleteIssue',issueController.deleteIssue)
     .get('/queryAllWorkOrder',workOrderController.queryAllWorkOrder)
+    .post('/queryWorkOrder',workOrderController.queryWorkOrder)
     .post('/addWorkOrder',workOrderController.addWorkOrder)
 module.exports = routers;
