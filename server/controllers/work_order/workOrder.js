@@ -6,24 +6,67 @@ const pool = new Pool(config)
 var data = {};
 
 
+//Sequelize
+const Sequelize = require('sequelize')
+const sequelize = new Sequelize(config.database, config.user, config.password, {
+    host: config.host,
+    dialect: 'postgres',
+
+    pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+    },
+});
+
+//WorkOrder模型
+const WorkOrder = sequelize.define('workOrder', {
+        title: {
+            type: Sequelize.STRING
+        },
+        start_by:{
+            type: Sequelize.STRING
+        },
+    },
+
+    {
+        tableName: 't_work_order_info',
+        freezeTableName: true
+    }
+);
+
+const workOrder = WorkOrder.sync({ force: false });
 /**
  * 异步请求函数,查询数据库
  * @returns {Promise<any>}
  */
 const doQueryAllWorkOrder = function () {
     var p = new Promise(function (resolve, reject) {
-        //做一些异步操作
-        pool.connect().then(client => {
-            // insert 数据
-            client.query("Select * FROM t_work_order_info").then(res => {
-                var value = res.rows
-                resolve(value)
-                return res
-            })
+        // //做一些异步操作
+        // pool.connect().then(client => {
+        //     // insert 数据
+        //     client.query("Select * FROM t_work_order_info").then(res => {
+        //         var value = res.rows
+        //         resolve(value)
+        //         return res
+        //     })
+        // })
+        WorkOrder.findAll(
+            {
+                limit: 2
+            }
+        ).then(workOrder => {
+            console.log("sequelize:" + workOrder)
+            resolve(workOrder)
         })
+
+
     });
     return p;
-}
+
+
+};
 
 const getAllWorkOrder = async function () {
     try {

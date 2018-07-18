@@ -42,9 +42,11 @@
     "file-loader": "^1.1.11",
     "isomorphic-fetch": "^2.2.1",
     "moment": "^2.22.1",
-    "pg": "^7.4.1",
+    "pg": "^7.4.3",
+    "pg-hstore": "^2.3.2",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
+    "sequelize": "^4.38.0",
     "style-loader": "^0.20.3"
   }
 }
