@@ -166,7 +166,6 @@ export default class OrderList extends React.Component {
                     }
                 },
 
-
                 {
                     label: "修改时间",
                     prop: "update_time",
@@ -302,7 +301,6 @@ export default class OrderList extends React.Component {
         /**
          * 验证表单规则
          * */
-        console.log("type" + this.state.workOrderFormType)
         if (0 == this.state.workOrderFormType) { //新增
             this.refs.workOrderForm.validate((valid) => {
                 if (valid) {
@@ -329,6 +327,12 @@ export default class OrderList extends React.Component {
                     axios.post('/api/updateWorkOrder', {
                         data: this.state.workOrderForm
                     }).then((res) => {
+                        if (res.data.data.status){
+                            console.log("数据返回成功了");
+                        }else {
+                            console.log("数据更新失败"+res.data.data.msg);
+                        }
+
                         this.setState({
                             workOrderDialogVisible: false
                         });

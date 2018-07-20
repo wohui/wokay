@@ -121,16 +121,16 @@ const deleteWorkOrderById = async function (req_data) {
 
 const doUpdateWorkOrderById = function (data) {
     var p = new Promise(function (resolve, reject) {
-        //做一些异步操作
-        pool.connect().then(client => {
-            //获取当前时间
-            const modify_time = moment().format('YYYY-MM-DD HH:mm:ss');
-            // insert 数据
-            client.query("update  t_work_order_info set title=$1,category=$2,content=$3,create_user=$4,modify_time=$5 where id=$6", [data.title, data.category, data.content, data.create_user, modify_time, data.id]).then(res => {
-                var value = res
-                resolve(value)
-                return res
-            })
+        WorkOrder.update(data,{
+         where:{
+            id:data.id
+         }}
+        ).then(() =>{
+            console.log('doUpdateWorkOrderById完成');
+            resolve(true)
+        }).catch(err =>{
+            console.log('doUpdateWorkOrderById错误：'+err);
+            reject(err)
         })
     });
     return p;
@@ -141,17 +141,20 @@ const doUpdateWorkOrderById = function (data) {
  * @returns {Promise<void>}
  */
 const updateWorkOrderById = async function (data) {
+    let res = {}
     try {
-        data = await doUpdateWorkOrderById(data); //设置字段
+        res.status  = await doUpdateWorkOrderById(data); //设置字段
+        res.msg = 'success';
         //如果返回 为何拿不到返回值
-        //return value
     } catch (err) {
-        console.log("出错了啊:" + err)
+        res.status = false
+        res.msg = err;
+        console.log("出错了:" + err)
     }
+    return res
 }
 const doQueryWorkOrder = function (data) {
     var p = new Promise(function (resolve, reject) {
-        console.log("--------data"+data)
         WorkOrder.findAll(
             {
                 where: data,
@@ -223,13 +226,12 @@ module.exports = {
      * @param ctx
      * @returns {Promise<void>}
      */
-    async updateWorkOrderById(ctx) {
+    async updateWorkOrder(ctx) {
         let req_data = ctx.request.body.data;
-        await updateWorkOrderById(req_data);
-
+        let data = await updateWorkOrderById(req_data);
         ctx.body = {
             success: true,
-            data: data
+            data:data
         }
     },
 
