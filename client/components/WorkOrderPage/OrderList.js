@@ -169,13 +169,13 @@ export default class OrderList extends React.Component {
 
                 {
                     label: "修改时间",
-                    prop: "modify_time",
+                    prop: "update_time",
                     width: 200,
                     render: function (data) {
                         return (
                             <span>
             <Icon name="time"/>
-            <span style={{marginLeft: '10px'}}>{moment(data.modify_time).format('YYYY-MM-DD HH:mm:ss')}</span>
+            <span style={{marginLeft: '10px'}}>{moment(data.update_time).format('YYYY-MM-DD HH:mm:ss')}</span>
 
           </span>)
                     }
@@ -348,8 +348,21 @@ export default class OrderList extends React.Component {
     //根据查询条件查询数据
     onQuerySubmit() {
         //向后端请求数据
+        let req_data = {}
+        if (this.state.queryWorkOrderForm.title !==''){
+            req_data.title = this.state.queryWorkOrderForm.title
+        }
+        if (this.state.queryWorkOrderForm.start_by !==''){
+            req_data.start_by = this.state.queryWorkOrderForm.start_by
+        }
+        if (this.state.queryWorkOrderForm.solve_name !==''){
+            req_data.solve_name = this.state.queryWorkOrderForm.solve_name
+        }
+        if (this.state.queryWorkOrderForm.tester !==''){
+            req_data.tester = this.state.queryWorkOrderForm.tester
+        }
         axios.post('/api/queryWorkOrder', {
-            data: this.state.queryWorkOrderForm
+            data: req_data
         }).then((res) => {
             this.setState({
                 data: res.data.data
@@ -526,8 +539,6 @@ export default class OrderList extends React.Component {
                         <div className="grid-content bg-purple-light">
                             <Button className="icon-btn" onClick={() => this.addWorkOrder()} type="primary"
                                     icon="edit"/>
-                            <Button className="icon-btn" onClick={() => this.queryWorkOrder()} type="primary"
-                                    icon="search"/>
                         </div>
                     </Layout.Col>
 
