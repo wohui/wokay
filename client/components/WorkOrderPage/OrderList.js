@@ -465,12 +465,18 @@ export default class OrderList extends React.Component {
                 id: row.id
             }
         }).then((res) => {
+            if (res.data.data.status){
             //删除成功后,页面上不显示
             const {data} = this.state;
             data.splice(index, 1); //从数组中删除一个元素
             this.setState({
                 data: [...data]
-            })
+            });
+            console.log("删除成功")//
+            }else {
+                console.log("删除失败")//todo popup弹出框
+            }
+
         }).catch((error) => {
             console.log("error:" + error)
         });

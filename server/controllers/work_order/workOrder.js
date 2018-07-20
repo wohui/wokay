@@ -8,7 +8,6 @@ const pool = new Pool(config)
 //
 const sequelize = require('../../sequelize')
 const WorkOrder = sequelize.import('../../models/workOrder');
-var data = {};
 
 
 /**
@@ -88,13 +87,16 @@ const addWorkOrder = async function (data) {
 const doDeleteWorkOrderById = function (data) {
     var p = new Promise(function (resolve, reject) {
         //做一些异步操作
-        pool.connect().then(client => {
-            // insert 数据
-            client.query("delete  FROM t_work_order_info where id = $1", [data.id]).then(res => {
-                var value = res.rows
-                resolve(value)
-                return res
-            })
+        WorkOrder.destroy({
+            where:{
+                id:data.id
+            }}
+        ).then(() =>{
+            console.log('doDeleteWorkOrderById完成');
+            resolve(true)
+        }).catch(err =>{
+            console.log('doDeleteWorkOrderById错误：'+err);
+            reject(err)
         })
     });
     return p;
@@ -105,13 +107,18 @@ const doDeleteWorkOrderById = function (data) {
  * @returns {Promise<void>}
  */
 const deleteWorkOrderById = async function (req_data) {
+    let res = {}
     try {
-        data = await doDeleteWorkOrderById(req_data); //设置字段值
+        res.status = await doDeleteWorkOrderById(req_data); //设置字段值
+        res.msg = 'success';
         //如果返回 为何拿不到返回值
         //return value
     } catch (err) {
-        console.log("deleteWorkOrderById:" + err)
+        console.log("deleteWorkOrderById出错:" + err)
+        res.status = false
+        res.msg = err;
     }
+    return res;
 }
 /**
  * 更新issue
@@ -197,8 +204,7 @@ module.exports = {
     },
     async addWorkOrder(ctx) {
         let req_data = ctx.request.body.data;
-        console.log(req_data.title)
-        await addWorkOrder(req_data);
+        let data = await addWorkOrder(req_data);
 
         ctx.body = {
             success: true,
@@ -213,7 +219,7 @@ module.exports = {
      */
     async deleteWorkOrder(ctx) {
         let req_data = ctx.request.query;
-        await deleteWorkOrderById(req_data);
+        let data = await deleteWorkOrderById(req_data);
 
         ctx.body = {
             success: true,
@@ -239,12 +245,12 @@ module.exports = {
      * 根据查询条件查询工单数据
      */
     async queryWorkOrder(ctx) {
-        let data = ctx.request.body.data;
-        let res = await queryWorkOrder(data);
+        let req_data = ctx.request.body.data;
+        let data = await queryWorkOrder(req_data);
 
         ctx.body = {
             success: true,
-            data: res
+            data: data
         }
     }
 }

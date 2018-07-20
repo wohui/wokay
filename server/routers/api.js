@@ -19,4 +19,5 @@ const routers = router
     .post('/queryWorkOrder',workOrderController.queryWorkOrder)
     .post('/addWorkOrder',workOrderController.addWorkOrder)
     .post('/updateWorkOrder',workOrderController.updateWorkOrder)
+    .get('/deleteWorkOrder',workOrderController.deleteWorkOrder)
 module.exports = routers;
