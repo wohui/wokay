@@ -61,7 +61,7 @@ const WorkOrder = (sequelize, DataTypes) => {
         {
             createdAt: 'create_time',
             updatedAt: 'update_time',
-            tableName: 't_work_order_info',
+            tableName: 't_work_order_info3',
             freezeTableName: true
         }
     );

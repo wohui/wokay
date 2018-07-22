@@ -179,6 +179,7 @@ class AddCategory extends React.Component {
                 <Dialog
                     title="新增类别"
                     visible={this.state.addDialogVisible}
+                    closeOnClickModal={false}
                     onCancel={() => this.setState({addDialogVisible: false})}
                 >
                     <Dialog.Body>

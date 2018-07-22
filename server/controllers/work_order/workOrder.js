@@ -34,7 +34,7 @@ const doQueryAllWorkOrder = function () {
         // });
         WorkOrder.findAll(
             {
-                limit: 10
+                limit:50
             }
         ).then(workOrder => {
             console.log("sequelize:" + workOrder)
@@ -50,7 +50,7 @@ const doQueryAllWorkOrder = function () {
 
 const getAllWorkOrder = async function () {
     try {
-        data = await doQueryAllWorkOrder(); //设置字段值
+        return await doQueryAllWorkOrder(); //设置字段值
         //如果返回 为何拿不到返回值
         //return value
     } catch (err) {
@@ -195,7 +195,7 @@ const queryWorkOrder = async function (data) {
  */
 module.exports = {
     async queryAllWorkOrder(ctx) {
-        await getAllWorkOrder();
+        let data = await getAllWorkOrder();
         ctx.body = {
             success: true,
             data: data

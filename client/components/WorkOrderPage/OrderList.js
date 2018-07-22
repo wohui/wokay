@@ -1,5 +1,5 @@
 import React from 'react'
-import {Button, Dialog, Form, Icon, Input, Layout, Select, Table, Tag} from 'element-react'
+import {Button, Dialog, Form, Icon, Input, Layout, Select, Table, Tag,DatePicker} from 'element-react'
 
 import 'element-theme-default' //导入element-ui默认主题
 import './OrderList.css'
@@ -14,6 +14,7 @@ export default class OrderList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            date1:null,
             columns: [
                 {
                     type: 'index'
@@ -223,7 +224,9 @@ export default class OrderList extends React.Component {
             workOrderFormTitle: "",
             workOrderFormType: 0, //提交类型,0-add 1-修改 2 -查看
             formItemDisabled: false,//控制表单是否可编辑
-            workOrderForm: {},//待提交表单数据
+            workOrderForm: {
+            },//待提交表单数据
+
             queryWorkOrderForm: {},//查询表单数据
             categoryValue: [],
             //是否分配选项
@@ -383,12 +386,12 @@ export default class OrderList extends React.Component {
     }
 
     onCancel(e) {
-        //console.log("onCancelData" + this.state.data.toString());
-        this.queryWorkOrder();
         this.setState({
             workOrderDialogVisible: false,
-
         });
+        console.log("onCancelData" + this.state.data.toString());
+        this.queryAllWorkOrder();
+
     }
 
     onChange(key, value) {
@@ -399,16 +402,15 @@ export default class OrderList extends React.Component {
     addWorkOrder() {
         this.refs.workOrderForm.resetFields();
         this.setState({
+            workOrderDialogVisible: true,
+            formItemDisabled: false,
             workOrderFormTitle: "新增工单",
             workOrderFormType: 0,
-            workOrderForm: {},
-            formItemDisabled: false,
-            workOrderDialogVisible: true,
         });
     }
 
     //查询全部数据
-    queryWorkOrder() {
+    queryAllWorkOrder() {
         //向后端请求数据
         axios.get('/api/queryAllWorkOrder', {
             params: {
@@ -429,13 +431,14 @@ export default class OrderList extends React.Component {
     viewRow(index, row) {
         this.refs.workOrderForm.resetFields();
         this.setState({
+            formItemDisabled: true,
+            workOrderDialogVisible: true,
             workOrderFormTitle: "查看详情",
             workOrderForm: row,
             workOrderFormType: 2,
-            formItemDisabled: true,
-            workOrderDialogVisible: true,
-        });
 
+        });
+        console.log(row.assigned_time)
     }
 
     /**
@@ -445,13 +448,13 @@ export default class OrderList extends React.Component {
     editRow(index, row) {
         this.refs.workOrderForm.resetFields();
         this.setState({
+            workOrderDialogVisible: true,
+            formItemDisabled: false,
             workOrderFormTitle: "编辑",
             workOrderFormType: 1,
             workOrderForm: row,
-            formItemDisabled: false,
-            workOrderDialogVisible: true,
-        });
 
+        });
 
     }
 
@@ -572,7 +575,7 @@ export default class OrderList extends React.Component {
                 <Dialog
                     title={this.state.workOrderFormTitle}
                     visible={this.state.workOrderDialogVisible}
-                    onCancel={() => this.setState({workOrderDialogVisible: false})}
+                    onCancel={this.onCancel.bind(this)}
                     size="large">
                     <Dialog.Body>
                         <Form ref="workOrderForm" model={this.state.workOrderForm} rules={this.state.rules}>
@@ -633,9 +636,19 @@ export default class OrderList extends React.Component {
                                         <Form.Item label="分配时间" labelWidth="120" prop="assigned_time"
                                                    model={this.state.workOrderForm}
                                                    onSubmit={this.onSubmit.bind(this)}>
-                                            <Input value={this.state.workOrderForm.assigned_time}
-                                                   disabled={this.state.formItemDisabled}
-                                                   onChange={this.onChange.bind(this, 'assigned_time')}/>
+                                                <DatePicker
+                                                    isDisabled={this.state.formItemDisabled}
+                                                    value ={ this.state.workOrderForm.assigned_time != null ? new Date(this.state.workOrderForm.assigned_time): null}
+                                                    format="yyyy-MM-dd HH:mm:ss"
+                                                    placeholder="选择日期"
+                                                    isShowTime={true}
+                                                    onChange={date=>{
+                                                        this.state.workOrderForm.assigned_time = date;
+                                                        console.debug('DatePicker1 changed: ', date);
+                                                        this.setState({workOrderForm: this.state.workOrderForm })
+                                                        this.onChange.bind(this, 'assigned_time')
+                                                    }}
+                                                />
                                         </Form.Item>
                                     </div>
                                 </Layout.Col>

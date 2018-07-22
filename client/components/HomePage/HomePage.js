@@ -181,7 +181,6 @@ export default class HomePage extends React.Component {
     }
 
     onCancel(e) {
-        console.log("onCancelData" + this.state.data.toString());
         this.queryIssueInfo();
         this.setState({
             issueDialogVisible: false,
@@ -194,16 +193,7 @@ export default class HomePage extends React.Component {
         this.forceUpdate();
     }
 
-    addIssue() {
-        this.refs.issueForm.resetFields();
-        this.setState({
-            issueFormTitle: "新增",
-            issueFormType: 0,
-            issueForm: {},
-            formItemDisabled:false,
-            issueDialogVisible: true,
-        });
-    }
+
 
     //查询数据,列表显示用
     queryIssueInfo() {
@@ -222,16 +212,29 @@ export default class HomePage extends React.Component {
     }
 
     /**
+     * 新增
+     */
+    addIssue() {
+        this.refs.issueForm.resetFields();
+        this.setState({
+            issueFormTitle: "新增",
+            issueFormType: 0,
+            issueForm: {},
+            formItemDisabled:false,
+            issueDialogVisible: true,
+        });
+    }
+    /**
      * 查看
      */
     viewRow(index, row) {
         this.refs.issueForm.resetFields();
         this.setState({
-            issueFormTitle: "查看详情",
             issueForm: row,
             issueFormType: 2,
             formItemDisabled:true,
             issueDialogVisible: true,
+            issueFormTitle: "查看详情",
         });
 
     }
@@ -301,7 +304,7 @@ export default class HomePage extends React.Component {
                 <Dialog
                     title={this.state.issueFormTitle}
                     visible={this.state.issueDialogVisible}
-                    onCancel={() => this.setState({issueDialogVisible: false})}
+                    onCancel={this.onCancel.bind(this)}
                 >
                     <Dialog.Body>
                         <Form ref="issueForm" model={this.state.issueForm} rules={this.state.rules}>
