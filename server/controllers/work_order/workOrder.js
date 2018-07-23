@@ -162,6 +162,11 @@ const updateWorkOrderById = async function (data) {
 }
 const doQueryWorkOrder = function (data) {
     var p = new Promise(function (resolve, reject) {
+        /**
+         *先同步创建表
+         */
+        sequelize.sync({force:false});
+
         WorkOrder.findAll(
             {
                 where: data,

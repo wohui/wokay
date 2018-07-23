@@ -39,7 +39,7 @@ const WorkOrder = (sequelize, DataTypes) => {
             },
             solve_time: {
                 allowNull: true,
-                type: DataTypes.INTEGER(2)
+                type: DataTypes.DATE(3)
             },
             tester: {
                 allowNull: true,
@@ -61,7 +61,7 @@ const WorkOrder = (sequelize, DataTypes) => {
         {
             createdAt: 'create_time',
             updatedAt: 'update_time',
-            tableName: 't_work_order_info3',
+            tableName: 't_work_order_info_test',
             freezeTableName: true
         }
     );
