@@ -22,7 +22,7 @@ export default class OrderList extends React.Component {
                 {
                     label: "标题",
                     prop: "title",
-                    width: 320,
+                    width: 300,
                     render: function (data) {
                         return (
                             <span>
@@ -33,7 +33,7 @@ export default class OrderList extends React.Component {
                 {
                     label: "发起人",
                     prop: "start_by",
-                    width: 100,
+                    width: 90,
                     render: function (data) {
                         return <Tag>{data.start_by}</Tag>
                     }
@@ -67,9 +67,9 @@ export default class OrderList extends React.Component {
                 {
                     label: "分配时间",
                     prop: "assigned_time",
-                    width: 100,
+                    width: 170,
                     render: function (data) {
-                        return <Tag>{data.assigned_time}</Tag>
+                        return <Tag>{moment(data.assigned_time).format('YYYY-MM-DD HH:mm:ss')}</Tag>
                     }
                 },
 
@@ -85,7 +85,7 @@ export default class OrderList extends React.Component {
                     label: "解决结果",
                     prop: "solved_result",
                     width: 100,
-                    filters: [{text: '未解决', value: 0}, , {text: '正在解决', value: 1}, {text: '已解决', value: 2}],
+                    filters: [{text: '未解决', value: 0}, {text: '正在解决', value: 1}, {text: '已解决', value: 2}],
                     filterMethod(value, row) {
                         return row.solved_result === value;
                     },
@@ -102,12 +102,12 @@ export default class OrderList extends React.Component {
                 {
                     label: "解决时间",
                     prop: "solve_time",
-                    width: 200,
+                    width: 170,
                     render: function (data) {
                         return (
                             <span>
-            <Icon name="time"/>
-            <span style={{marginLeft: '10px'}}>{moment(data.solve_time).format('YYYY-MM-DD HH:mm:ss')}</span>
+
+            <Tag>{moment(data.solve_time).format('YYYY-MM-DD HH:mm:ss')}</Tag>
 
           </span>)
                     }
@@ -115,7 +115,7 @@ export default class OrderList extends React.Component {
                 {
                     label: "是否Bug",
                     prop: "is_fcar_bug",
-                    width: 100,
+                    width: 90,
                     render: function (data) {
                         if (0 === data.is_fcar_bug) {
                             return <Tag>是</Tag>
@@ -145,7 +145,7 @@ export default class OrderList extends React.Component {
                 {
                     label: "创建人",
                     prop: "create_user",
-                    width: 120,
+                    width: 100,
                     render: function (data) {
                         return (
                             <span>
@@ -156,7 +156,7 @@ export default class OrderList extends React.Component {
                 {
                     label: "创建时间",
                     prop: "create_time",
-                    width: 200,
+                    width: 170,
                     render: function (data) {
                         return (
                             <span>
@@ -170,7 +170,7 @@ export default class OrderList extends React.Component {
                 {
                     label: "修改时间",
                     prop: "update_time",
-                    width: 200,
+                    width: 170,
                     render: function (data) {
                         return (
                             <span>
@@ -183,7 +183,7 @@ export default class OrderList extends React.Component {
                 {
                     label: "操作",
                     prop: "address",
-                    width: 210,
+                    width: 190,
                     render: (row, column, index) => {
                         return (
                             <span>
@@ -488,7 +488,6 @@ export default class OrderList extends React.Component {
 
     render() {
         return (
-
             <div className="main">
                 <Form ref="queryWorkOrderForm" model={this.state.queryWorkOrderForm} className="query-form">
                     <Layout.Row>
@@ -585,7 +584,7 @@ export default class OrderList extends React.Component {
                                        onChange={this.onChange.bind(this, 'title')}/>
                             </Form.Item>
                             <Layout.Row>
-                                <Layout.Col span="12">
+                                <Layout.Col span="7">
                                     <div className="grid-content bg-purple">
                                         <Form.Item label="发起人" labelWidth="120"
                                                    prop="start_by"
@@ -599,7 +598,7 @@ export default class OrderList extends React.Component {
                                     </div>
                                 </Layout.Col>
 
-                                <Layout.Col span="12">
+                                <Layout.Col span="7">
                                     <div className="grid-content bg-purple">
                                         <Form.Item label="测试人员" labelWidth="120" prop="tester"
                                                    model={this.state.workOrderForm}
@@ -612,7 +611,7 @@ export default class OrderList extends React.Component {
                                 </Layout.Col>
                             </Layout.Row>
                             <Layout.Row>
-                                <Layout.Col span="7">
+                                <Layout.Col span="5">
                                     <div className="grid-content bg-purple">
                                         <Form.Item label="是否分配" labelWidth="120" prop="is_assigned"
                                                    model={this.state.workOrderForm}
@@ -631,7 +630,7 @@ export default class OrderList extends React.Component {
                                     </div>
                                 </Layout.Col>
 
-                                <Layout.Col span="8">
+                                <Layout.Col span="6">
                                     <div className="grid-content bg-purple">
                                         <Form.Item label="分配时间" labelWidth="120" prop="assigned_time"
                                                    model={this.state.workOrderForm}
@@ -665,7 +664,7 @@ export default class OrderList extends React.Component {
                                 </Layout.Col>
                             </Layout.Row>
                             <Layout.Row>
-                                <Layout.Col span="7">
+                                <Layout.Col span="5">
                                     <div className="grid-content bg-purple">
                                         <Form.Item label="解决结果" labelWidth="120" prop="solved_result"
                                                    model={this.state.workOrderForm}
@@ -686,23 +685,34 @@ export default class OrderList extends React.Component {
                                 </Layout.Col>
                                 <Layout.Col span="6">
                                     <div className="grid-content bg-purple-light">
+                                        <Form.Item label="解决时间" labelWidth="120" prop="solve_time"
+                                                   model={this.state.workOrderForm}
+                                                   onSubmit={this.onSubmit.bind(this)}>
+
+                                            <DatePicker
+                                                isDisabled={this.state.formItemDisabled}
+                                                value ={ this.state.workOrderForm.solve_time != null ? new Date(this.state.workOrderForm.solve_time): null}
+                                                format="yyyy-MM-dd HH:mm:ss"
+                                                placeholder="选择日期"
+                                                isShowTime={true}
+                                                onChange={date=>{
+                                                    this.state.workOrderForm.solve_time = date;
+                                                    console.debug('DatePicker1 changed: ', date);
+                                                    this.setState({workOrderForm: this.state.workOrderForm })
+                                                    this.onChange.bind(this, 'solve_time')
+                                                }}
+                                            />
+                                        </Form.Item>
+                                    </div>
+                                </Layout.Col>
+                                <Layout.Col span="6">
+                                    <div className="grid-content bg-purple-light">
                                         <Form.Item label="解决人" labelWidth="120" prop="solve_name"
                                                    model={this.state.workOrderForm}
                                                    onSubmit={this.onSubmit.bind(this)}>
                                             <Input value={this.state.workOrderForm.solve_name}
                                                    disabled={this.state.formItemDisabled}
                                                    onChange={this.onChange.bind(this, 'solve_name')}/>
-                                        </Form.Item>
-                                    </div>
-                                </Layout.Col>
-                                <Layout.Col span="6">
-                                    <div className="grid-content bg-purple-light">
-                                        <Form.Item label="解决时间" labelWidth="120" prop="solve_time"
-                                                   model={this.state.workOrderForm}
-                                                   onSubmit={this.onSubmit.bind(this)}>
-                                            <Input value={this.state.workOrderForm.solve_time}
-                                                   disabled={this.state.formItemDisabled}
-                                                   onChange={this.onChange.bind(this, 'solve_time')}/>
                                         </Form.Item>
                                     </div>
                                 </Layout.Col>
