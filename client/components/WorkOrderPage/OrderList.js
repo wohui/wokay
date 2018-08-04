@@ -49,7 +49,7 @@ export default class OrderList extends React.Component {
                 {
                     label: "是否分配",
                     prop: "is_assigned",
-                    width: 100,
+                    width: 120,
                     filters: [{text: '未分配', value: 0}, {text: '已分配', value: 1}],
                     filterMethod(value, row) {
                         return row.is_assigned === value;
@@ -84,7 +84,7 @@ export default class OrderList extends React.Component {
                 {
                     label: "解决结果",
                     prop: "solved_result",
-                    width: 100,
+                    width: 120,
                     filters: [{text: '未解决', value: 0}, {text: '正在解决', value: 1}, {text: '已解决', value: 2}],
                     filterMethod(value, row) {
                         return row.solved_result === value;
@@ -115,7 +115,7 @@ export default class OrderList extends React.Component {
                 {
                     label: "是否Bug",
                     prop: "is_fcar_bug",
-                    width: 90,
+                    width: 95,
                     render: function (data) {
                         if (0 === data.is_fcar_bug) {
                             return <Tag>是</Tag>
@@ -160,8 +160,7 @@ export default class OrderList extends React.Component {
                     render: function (data) {
                         return (
                             <span>
-            <Icon name="time"/>
-            <span style={{marginLeft: '10px'}}>{moment(data.create_time).format('YYYY-MM-DD HH:mm:ss')}</span>
+            <Tag>{moment(data.create_time).format('YYYY-MM-DD HH:mm:ss')}</Tag>
 
           </span>)
                     }
@@ -174,8 +173,7 @@ export default class OrderList extends React.Component {
                     render: function (data) {
                         return (
                             <span>
-            <Icon name="time"/>
-            <span style={{marginLeft: '10px'}}>{moment(data.update_time).format('YYYY-MM-DD HH:mm:ss')}</span>
+            <span>{moment(data.update_time).format('YYYY-MM-DD HH:mm:ss')}</span>
 
           </span>)
                     }
@@ -491,7 +489,7 @@ export default class OrderList extends React.Component {
             <div className="main">
                 <Form ref="queryWorkOrderForm" model={this.state.queryWorkOrderForm} className="query-form">
                     <Layout.Row>
-                        <Layout.Col span="5">
+                        <Layout.Col span="8">
                             <div className="grid-content bg-purple">
                                 <Form.Item label="标题" labelWidth="120" prop="title"
                                            model={this.state.queryWorkOrderForm}
@@ -518,7 +516,7 @@ export default class OrderList extends React.Component {
                                            prop="solve_name"
                                            onSubmit={this.onQuerySubmit.bind(this)}
                                 >
-                                    <Input value={this.state.queryWorkOrderForm.solve_name} placeholder="请输入解决人"
+                                    <Input value={this.state.queryWorkOrderForm.solve_name}
                                            onChange={this.onQueryChange.bind(this, 'solve_name')}/>
                                 </Form.Item>
                             </div>
@@ -562,8 +560,8 @@ export default class OrderList extends React.Component {
                                 columns={this.state.columns}
                                 data={this.state.data}
                                 border={true}
-                                height={800}
-                                width={1000}
+                                height={600}
+                                width={720}
                                 highlightCurrentRow={true}
                             />
                         </div>
