@@ -169,14 +169,6 @@ const doQueryWorkOrder = function (data) {
          *先同步创建表
          */
         //sequelize.sync({force: false});
-        console.log(data)
-        let conditon = {};
-        if (!!data.title) {
-            conditon.title = 'title:' + {[Op.like]: data.title}
-        }
-
-        console.log(!!data.title)
-
         WorkOrder.findAll(
             {
                 where: {
