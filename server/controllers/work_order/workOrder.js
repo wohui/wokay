@@ -2,13 +2,14 @@ const config = require('../../config/config')
 const moment = require('moment');
 const {Pool} = require('pg')
 const pool = new Pool(config)
-
+const Sequelize = require("sequelize")
 //导入数据模型
 //const WorkOrder = require('../../models/workOrder')
 //
 const sequelize = require('../../sequelize')
 const WorkOrder = sequelize.import('../../models/workOrder');
 
+const Op = Sequelize.Op;
 
 /**
  * 异步请求函数,查询数据库
@@ -34,7 +35,7 @@ const doQueryAllWorkOrder = function () {
         // });
         WorkOrder.findAll(
             {
-                limit:50
+                limit: 50
             }
         ).then(workOrder => {
             console.log("sequelize:" + workOrder)
@@ -60,10 +61,10 @@ const getAllWorkOrder = async function () {
 
 const doAddWorkOrder = function (data) {
     var p = new Promise(function (resolve, reject) {
-        WorkOrder.create(data).then(() =>{
-           console.log('doAddWorkOrder完成');
-        }).catch(err =>{
-            console.log('doAddWorkOrder错误：'+err);
+        WorkOrder.create(data).then(() => {
+            console.log('doAddWorkOrder完成');
+        }).catch(err => {
+            console.log('doAddWorkOrder错误：' + err);
         })
     });
     return p;
@@ -88,14 +89,15 @@ const doDeleteWorkOrderById = function (data) {
     var p = new Promise(function (resolve, reject) {
         //做一些异步操作
         WorkOrder.destroy({
-            where:{
-                id:data.id
-            }}
-        ).then(() =>{
+                where: {
+                    id: data.id
+                }
+            }
+        ).then(() => {
             console.log('doDeleteWorkOrderById完成');
             resolve(true)
-        }).catch(err =>{
-            console.log('doDeleteWorkOrderById错误：'+err);
+        }).catch(err => {
+            console.log('doDeleteWorkOrderById错误：' + err);
             reject(err)
         })
     });
@@ -128,15 +130,16 @@ const deleteWorkOrderById = async function (req_data) {
 
 const doUpdateWorkOrderById = function (data) {
     var p = new Promise(function (resolve, reject) {
-        WorkOrder.update(data,{
-         where:{
-            id:data.id
-         }}
-        ).then(() =>{
+        WorkOrder.update(data, {
+                where: {
+                    id: data.id
+                }
+            }
+        ).then(() => {
             console.log('doUpdateWorkOrderById完成');
             resolve(true)
-        }).catch(err =>{
-            console.log('doUpdateWorkOrderById错误：'+err);
+        }).catch(err => {
+            console.log('doUpdateWorkOrderById错误：' + err);
             reject(err)
         })
     });
@@ -150,7 +153,7 @@ const doUpdateWorkOrderById = function (data) {
 const updateWorkOrderById = async function (data) {
     let res = {}
     try {
-        res.status  = await doUpdateWorkOrderById(data); //设置字段
+        res.status = await doUpdateWorkOrderById(data); //设置字段
         res.msg = 'success';
         //如果返回 为何拿不到返回值
     } catch (err) {
@@ -165,12 +168,32 @@ const doQueryWorkOrder = function (data) {
         /**
          *先同步创建表
          */
-        sequelize.sync({force:false});
+        //sequelize.sync({force: false});
+        console.log(data)
+        let conditon = {};
+        if (!!data.title) {
+            conditon.title = 'title:' + {[Op.like]: data.title}
+        }
+
+        console.log(!!data.title)
 
         WorkOrder.findAll(
             {
-                where: data,
-                limit: 10
+                where: {
+                    title: {
+                        [Op.like]: (!!data.title) ? '%' + data.title + '%' : "%%",
+                    },
+                    start_by: {
+                        [Op.like]: (!!data.start_by) ? '%' + data.start_by + '%' : "%%",
+                    },
+                    solve_name: {
+                        [Op.like]: (!!data.solve_name) ? '%' + data.solve_name + '%' : "%%",
+                    },
+                    tester: {
+                        [Op.like]: (!!data.tester) ? '%' + data.tester + '%' : "%%",
+                    }
+                }
+
             }
         ).then(workOrder => {
             console.log("sequelize:" + workOrder)
@@ -242,7 +265,7 @@ module.exports = {
         let data = await updateWorkOrderById(req_data);
         ctx.body = {
             success: true,
-            data:data
+            data: data
         }
     },
 

@@ -22,11 +22,11 @@ export default class OrderList extends React.Component {
                 {
                     label: "标题",
                     prop: "title",
-                    width: 300,
+                    width: 220,
                     render: function (data) {
                         return (
                             <span>
-            <span style={{marginLeft: '10px'}}>{data.title}</span>
+            <Tag>{data.title}</Tag>
           </span>)
                     }
                 },
@@ -149,7 +149,7 @@ export default class OrderList extends React.Component {
                     render: function (data) {
                         return (
                             <span>
-            <span style={{marginLeft: '10px'}}>{data.create_user}</span>
+            <Tag>{data.create_user}</Tag>
           </span>)
                     }
                 },
@@ -173,7 +173,7 @@ export default class OrderList extends React.Component {
                     render: function (data) {
                         return (
                             <span>
-            <span>{moment(data.update_time).format('YYYY-MM-DD HH:mm:ss')}</span>
+            <Tag>{moment(data.update_time).format('YYYY-MM-DD HH:mm:ss')}</Tag>
 
           </span>)
                     }
