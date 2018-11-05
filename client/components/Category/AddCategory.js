@@ -11,7 +11,8 @@ class AddCategory extends React.Component {
         this.state = {
             columns: [
                 {
-                    type: 'index'
+                    type: 'index',
+                    label: "序号",
                 },
                 {
                     label: "添加日期",

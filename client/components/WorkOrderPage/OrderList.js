@@ -17,7 +17,8 @@ export default class OrderList extends React.Component {
             date1:null,
             columns: [
                 {
-                    type: 'index'
+                    type: 'index',
+                    label: "序号",
                 },
                 {
                     label: "标题",
