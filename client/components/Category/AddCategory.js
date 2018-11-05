@@ -20,9 +20,9 @@ class AddCategory extends React.Component {
                     render: function (data) {
                         return (
                             <span>
-            <Icon name="time"/>
-            <span style={{marginLeft: '10px'}}>{moment(data.create_time).format('YYYY-MM-DD HH:mm:ss')}</span>
-          </span>)
+                            <Icon name="time"/>
+                            <span style={{marginLeft: '10px'}}>{moment(data.create_time).format('YYYY-MM-DD HH:mm:ss')}</span>
+                        </span>)
                     }
                 },
                 {
@@ -40,11 +40,11 @@ class AddCategory extends React.Component {
                     render: (row, column, index) => {
                         return (
                             <span>
-                                 <Button plain={true} type="info" size="small" onClick={this.viewRow.bind(this, index,row)}>查看</Button>
-                                 <Button plain={true} type="info" size="small" onClick={this.editRow.bind(this, index,row)}>编辑</Button>
-                                 <Button type="danger" size="small" onClick={this.deleteRow.bind(this, index,row)}>删除</Button>
-                            </span>
-                        )
+                            <Button plain={true} type="info" size="small" onClick={this.viewRow.bind(this, index,row)}>查看</Button>
+                        <Button plain={true} type="info" size="small" onClick={this.editRow.bind(this, index,row)}>编辑</Button>
+                        <Button type="danger" size="small" onClick={this.deleteRow.bind(this, index,row)}>删除</Button>
+                        </span>
+                    )
                     }
                 }
             ],
@@ -163,47 +163,47 @@ class AddCategory extends React.Component {
     render() {
         return (
             <div>
-                <Button className="action-btn" type="primary" onClick={() => this.add()}>新建</Button>
-                <Button className="action-btn" type="primary" onClick={() => this.query()}>查询</Button>
-                <Table
-                    style={{width: '100%'}}
-                    columns={this.state.columns}
-                    data={this.state.data}
-                    border={true}
-                    height={600}
-                    width={800}
-                    highlightCurrentRow={true}
-                />
+            <Button className="action-btn" type="primary" onClick={() => this.add()}>新建</Button>
+        <Button className="action-btn" type="primary" onClick={() => this.query()}>查询</Button>
+        <Table
+        style={{width: '100%'}}
+        columns={this.state.columns}
+        data={this.state.data}
+        border={true}
+        height={600}
+        width={800}
+        highlightCurrentRow={true}
+            />
 
-                {/*新增类别对话框*/}
-                <Dialog
-                    title="新增类别"
-                    visible={this.state.addDialogVisible}
-                    closeOnClickModal={false}
-                    onCancel={() => this.setState({addDialogVisible: false})}
-                >
-                    <Dialog.Body>
-                        <Form ref="categoryForm" model={this.state.categoryForm} rules={this.state.rules}>
-                            <Form.Item label="类别名称" labelWidth="120" model={this.state.categoryForm} prop="name"
-                                       onSubmit={this.onSubmit.bind(this)}>
-                                <Input value={this.state.categoryForm.name}
-                                       onChange={this.onChange.bind(this, 'name')}/>
-                            </Form.Item>
-                            <Form.Item label="创建人" labelWidth="120"  prop="create_user">
-                                <Input value={this.state.categoryForm.create_user}
-                                       onChange={this.onChange.bind(this, 'create_user')}/>
-                            </Form.Item>
-                        </Form>
-                    </Dialog.Body>
+            {/*新增类别对话框*/}
+            <Dialog
+        title="新增类别"
+        visible={this.state.addDialogVisible}
+        closeOnClickModal={false}
+        onCancel={() => this.setState({addDialogVisible: false})}
+    >
+    <Dialog.Body>
+        <Form ref="categoryForm" model={this.state.categoryForm} rules={this.state.rules}>
+    <Form.Item label="类别名称" labelWidth="120" model={this.state.categoryForm} prop="name"
+        onSubmit={this.onSubmit.bind(this)}>
+    <Input value={this.state.categoryForm.name}
+        onChange={this.onChange.bind(this, 'name')}/>
+    </Form.Item>
+        <Form.Item label="创建人" labelWidth="120"  prop="create_user">
+            <Input value={this.state.categoryForm.create_user}
+        onChange={this.onChange.bind(this, 'create_user')}/>
+    </Form.Item>
+        </Form>
+        </Dialog.Body>
 
-                    <Dialog.Footer className="dialog-footer">
-                        <Button onClick={() => this.setState({addDialogVisible: false})}>取 消</Button>
-                        <Button type="primary" nativeType="submit" onClick={this.onSubmit.bind(this)}>确 定</Button>
-                    </Dialog.Footer>
-                </Dialog>
+        <Dialog.Footer className="dialog-footer">
+            <Button onClick={() => this.setState({addDialogVisible: false})}>取 消</Button>
+        <Button type="primary" nativeType="submit" onClick={this.onSubmit.bind(this)}>确 定</Button>
+        </Dialog.Footer>
+        </Dialog>
 
-            </div>
-        )
+        </div>
+    )
     }
 
 }

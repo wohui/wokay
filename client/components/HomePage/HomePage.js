@@ -18,7 +18,10 @@ export default class HomePage extends React.Component {
         this.state = {
             columns: [
                 {
-                    type: 'index'
+                    type: 'index',
+                    label: "序号",
+                    width:"300",//好像不生效
+
                 },
                 {
                     label: "标题",
@@ -292,8 +295,9 @@ export default class HomePage extends React.Component {
                                 columns={this.state.columns}
                                 data={this.state.data}
                                 border={true}
+                                fit = {true}
                                 height={800}
-                                width={1000}
+                                width={1200}
                                 highlightCurrentRow={true}
                             />
                         </div>
