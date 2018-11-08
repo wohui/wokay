@@ -16,7 +16,9 @@ const doQueryIssueInfo = function (){
         pool.connect().then(client=>{
             // insert 数据
             client.query("Select * FROM t_issue_info").then(res=>{
+                client.release()
                 var value = res.rows
+                console.log(value)
                 resolve(value)
                 return res
             })
@@ -28,6 +30,7 @@ const doQueryIssueInfo = function (){
 const getIssueInfo = async function(){
     try {
         data = await doQueryIssueInfo(); //设置字段值
+        console.log("getIss"+data)
         //如果返回 为何拿不到返回值
         //return value
     }catch (err) {
@@ -137,6 +140,7 @@ const updateIssueById = async function(data){
 module.exports = {
     async getIssueInfo( ctx ) {
         await getIssueInfo();
+        console.log("getIss"+data)
         ctx.body = {
             success: true,
             data: data
