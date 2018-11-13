@@ -44,6 +44,7 @@ const doAddCategoryInfo = function (category_name, create_user) {
             const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
             // insert 数据
             client.query("insert into t_category_info (name,create_user,create_time) VALUES($1,$2,$3)", [category_name, create_user, currentTime]).then(res => {
+                client.release()
                 var value = res
                 resolve(value)
                 return res
@@ -71,7 +72,7 @@ const doGetAllCategoryName = function () {
         pool.connect().then( client => {
             // insert 数据
             client.query("select name from t_category_info ").then(res => {
-
+                client.release()
                 var value = res.rows
                 resolve(value)
                 return res
@@ -102,6 +103,7 @@ const doDeleteCategoryById = function (req_data) {
             const category_id = req_data.id;
             // insert 数据
             client.query("delete from t_category_info where id = $1", [category_id]).then(res => {
+                client.release()
                 var value = res.rows
                 resolve(value)
                 return res

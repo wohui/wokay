@@ -35,10 +35,9 @@ const doQueryAllWorkOrder = function () {
         // });
         WorkOrder.findAll(
             {
-                limit: 50
+                limit: 100
             }
         ).then(workOrder => {
-            console.log("sequelize:" + workOrder)
             resolve(workOrder)
         })
 

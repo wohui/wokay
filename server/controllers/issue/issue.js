@@ -46,6 +46,7 @@ const doAddIssue = function (data){
             const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
             // insert 数据
             client.query("insert into t_issue_info (title,category,content,create_user,create_time) VALUES($1,$2,$3,$4,$5)",[data.title,data.category,data.content,data.create_user,currentTime]).then(res=>{
+                client.release()
                 var value = res
                 resolve(value)
                 return res
@@ -74,6 +75,7 @@ const doDeleteIssueById = function (req_data){
         pool.connect().then(client=>{
             // insert 数据
             client.query("delete  FROM t_issue_info where id = $1",[req_data.id]).then(res=>{
+                client.release()
                 var value = res.rows
                 resolve(value)
                 return res
@@ -110,6 +112,7 @@ const doUpdateIssueById = function (data){
             const modify_time = moment().format('YYYY-MM-DD HH:mm:ss');
             // insert 数据
             client.query("update  t_issue_info set title=$1,category=$2,content=$3,create_user=$4,modify_time=$5 where id=$6",[data.title,data.category,data.content,data.create_user,modify_time,data.id]).then(res=>{
+                client.release()
                 var value = res
                 resolve(value)
                 return res
