@@ -1,7 +1,9 @@
 # wokay
-## 基于nodejs koa2框架+react的应用
-### nodejs+koa +router4 + postgresql ###
-#### react ####
+## 基于nodejs koa2 +react的web应用
+### nodejs+koa2 + react-router4 + postgresql ###
+## 实现功能
+### 工单管理
+### 知识分享管理
 
 # Deploy #
 1. npm install
